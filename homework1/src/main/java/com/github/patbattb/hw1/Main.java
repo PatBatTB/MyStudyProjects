@@ -1,7 +1,18 @@
 package com.github.patbattb.hw1;
 
-public class Main {
+import com.github.patbattb.hw1.domain.MainMenu;
+
+/**
+ * Accounting program's main class.
+ * Starts the main menu.
+ */
+public final class Main {
+
+    private static final MainMenu MENU = new MainMenu();
+
+    private Main() { }
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        MENU.run();
     }
 }
