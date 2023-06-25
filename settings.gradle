@@ -1,2 +1,4 @@
-rootProject.name = 'YaProjects'
+rootProject.name = 'MyStudyProjects'
+
+include 'homework1'
 
