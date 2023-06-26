@@ -1,6 +1,6 @@
 package com.github.patbattb.hw1;
 
-import com.github.patbattb.hw1.domain.MainMenu;
+import com.github.patbattb.hw1.service.MainMenu;
 
 /**
  * Accounting program's main class.

@@ -1,6 +1,7 @@
 package com.github.patbattb.hw1.domain;
 
 import com.github.patbattb.hw1.commands.*;
+import com.github.patbattb.hw1.service.ReportHandler;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -24,7 +25,7 @@ public final class CommandMap {
         defaultCommand = new UnknownCommand();
     }
 
-    public void execute(String number) {
-        mapOfCommands.getOrDefault(number, defaultCommand).run();
+    public void execute(String number, ReportHandler reportHandler) {
+        mapOfCommands.getOrDefault(number, defaultCommand).runCommand(reportHandler);
     }
 }
