@@ -5,7 +5,20 @@ import java.util.ArrayList;
 /**
  * Implementation of {@link Report} for yearly reports.
  */
-public class ReportYearly extends Report {
-    private int date;
-    private ArrayList<TransactionYearly> transactions;
+public final class ReportYearly extends Report {
+    private final int date;
+    private final ArrayList<TransactionYearly> transactions;
+
+    public ReportYearly(int date) {
+        this.date = date;
+        transactions = new ArrayList<>();
+    }
+
+    public int getDate() {
+        return date;
+    }
+
+    public ArrayList<TransactionYearly> getTransactions() {
+        return transactions;
+    }
 }

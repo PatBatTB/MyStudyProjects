@@ -1,6 +1,7 @@
 package com.github.patbattb.hw1.service;
 
 import com.github.patbattb.hw1.domain.CommandMap;
+import com.github.patbattb.hw1.domain.ReportStorage;
 
 import java.util.Scanner;
 
@@ -9,7 +10,7 @@ import java.util.Scanner;
  */
 public final class MainMenu {
 
-    private static final ReportHandler REPORT_HANDLER = new ReportHandler();
+    private static final ReportStorage REPORT_HANDLER = new ReportStorage();
     private final CommandMap commandMap = new CommandMap();
     private final Scanner scin = new Scanner(System.in);
     private String commandNumber;

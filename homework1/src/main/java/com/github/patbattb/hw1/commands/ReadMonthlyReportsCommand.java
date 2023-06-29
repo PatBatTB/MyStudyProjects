@@ -1,7 +1,7 @@
 package com.github.patbattb.hw1.commands;
 
+import com.github.patbattb.hw1.domain.ReportStorage;
 import com.github.patbattb.hw1.service.DataConverter;
-import com.github.patbattb.hw1.service.ReportHandler;
 import com.github.patbattb.hw1.service.ReportReader;
 
 import java.nio.file.Path;
@@ -12,8 +12,8 @@ import java.util.List;
  */
 public final class ReadMonthlyReportsCommand implements MenuCommand {
     @Override
-    public void runCommand(ReportHandler reportHandler) {
+    public void runCommand(ReportStorage reportStorage) {
         List<Path> fileList = ReportReader.getMonthlyReports();
-        DataConverter.convertMonthData(reportHandler.getReportContainer(), fileList);
+        DataConverter.convertMonthData(reportStorage, fileList);
     }
 }

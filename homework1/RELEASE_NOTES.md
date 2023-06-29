@@ -1,5 +1,13 @@
 ___
 
+# V0.3.0
+
+- Convert ReportHandler to ReportStorage
+- Added container with sums to ReportStorage
+- Implemented Verify Reports Command
+
+___
+
 # V0.2.0
 
 - Moved report files to ./reports
