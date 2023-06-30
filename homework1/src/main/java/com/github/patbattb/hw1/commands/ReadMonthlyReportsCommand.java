@@ -15,5 +15,6 @@ public final class ReadMonthlyReportsCommand implements MenuCommand {
     public void runCommand(ReportStorage reportStorage) {
         List<Path> fileList = ReportReader.getMonthlyReports();
         DataConverter.convertMonthData(reportStorage, fileList);
+        System.out.println("Месячные отчеты считаны.");
     }
 }

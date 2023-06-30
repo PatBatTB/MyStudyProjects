@@ -15,5 +15,6 @@ public final class ReadYearlyReportsCommand implements MenuCommand {
     public void runCommand(ReportStorage reportStorage) {
         List<Path> fileList = ReportReader.getYearlyReports();
         DataConverter.convertYearlyData(reportStorage, fileList);
+        System.out.println("Годовые отчеты считаны.");
     }
 }

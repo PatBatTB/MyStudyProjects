@@ -15,7 +15,7 @@ public final class VerifyReportsCommand implements MenuCommand {
         HashMap<Integer, Integer> sumFromYearlyReport = reportStorage.getSumContainer().getSumsFromYearlyReports();
 
         if (sumFromYearlyReport.size() == 0 || sumFromMonthlyReport.size() == 0) {
-            System.out.println("Не считаны отчеты");
+            System.out.println("Отчеты отсутствуют!");
             return;
         }
 

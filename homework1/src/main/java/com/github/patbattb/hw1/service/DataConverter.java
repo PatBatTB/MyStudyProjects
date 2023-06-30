@@ -29,6 +29,8 @@ public final class DataConverter {
             if (matcher.find()) {
                 int date = Integer.parseInt(matcher.group());
                 ReportMonthly reportMonthly = CreationReportService.createMonthlyReport(file, date);
+                reportMonthly.calculateMostProfitableProduct();
+                reportMonthly.calculateMostExpense();
                 reportMap.put(date, reportMonthly);
                 SumParser.parse(sumMonthlyMap, reportMonthly);
             }
@@ -49,6 +51,8 @@ public final class DataConverter {
             if (matcher.find()) {
                 int date = Integer.parseInt(matcher.group());
                 ReportYearly reportYearly = CreationReportService.createYearlyReport(file, date);
+                reportYearly.calculateAverageProfit();
+                reportYearly.calculateAverageExpense();
                 reportMap.put(date, reportYearly);
                 SumParser.parse(sumYearlyMap, reportYearly);
             }

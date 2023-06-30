@@ -59,9 +59,13 @@
     <!--   <property name="fileExtensions" value="java"/> -->
     <!-- </module> -->
 
+    <module name="SuppressWarningsFilter"/>
+
     <module name="TreeWalker">
         <!-- Checks for annotations -->
         <module name="PackageAnnotation"/>
+
+        <module name="SuppressWarningsHolder"/>
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See https://checkstyle.org/config_naming.html -->

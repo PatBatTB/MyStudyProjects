@@ -1,5 +1,14 @@
 ___
 
+# V1.0.0
+
+- Added info data to reports.
+- Added calculating methods into report classes.
+- Calculating of info data is performed during execution of reading commands.
+- Implemented monthly and yearly info commands.
+
+___
+
 # V0.3.0
 
 - Convert ReportHandler to ReportStorage
