@@ -26,7 +26,7 @@ public class Task {
     }
 
     /**
-     * ID doesn't can be set manually. The param must be sets in the addTask() method of {@link Manager} class.
+     * ID doesn't can be set manually. The param must be sets in the addTask() method of Manager class.
      *
      * @param id unique ID of task.
      */
