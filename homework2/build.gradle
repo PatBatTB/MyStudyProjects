@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+}
+
+group = 'com.github.patbattb'
+version = '0.0.1'
+mainClassName = 'com.github.patbattb.hw2.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': mainClassName)
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
