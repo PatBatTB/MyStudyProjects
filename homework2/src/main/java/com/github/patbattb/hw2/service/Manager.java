@@ -1,10 +1,9 @@
 package com.github.patbattb.hw2.service;
 
-import com.github.patbattb.hw2.domain.EpicTask;
-import com.github.patbattb.hw2.domain.SubTask;
-import com.github.patbattb.hw2.domain.Task;
-import com.github.patbattb.hw2.domain.TaskContainer;
+import com.github.patbattb.hw2.domain.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,28 +22,70 @@ public final class Manager {
         return taskContainer;
     }
 
-    public List<Task> getListOfAllTasks() {
-        return null;
+    public ArrayList<Task> getListOfAllTasks() {
+        ArrayList<Task> taskList = new ArrayList<>();
+        taskList.addAll(taskContainer.getOrdinaryTaskMap().values());
+        taskList.addAll(taskContainer.getEpicTaskMap().values());
+        taskList.addAll(taskContainer.getSubTaskMap().values());
+        return taskList;
     }
 
     public List<Task> getListOfOrdinaryTasks() {
-        return null;
+        return new ArrayList<>(taskContainer.getOrdinaryTaskMap().values());
     }
 
-    public List<Task> getListOfEpicTasks() {
-        return null;
+    public List<EpicTask> getListOfEpicTasks() {
+        return new ArrayList<>(taskContainer.getEpicTaskMap().values());
     }
 
-    public List<Task> getListOfSubTasks(EpicTask epic) {
-        return null;
+    public List<SubTask> getListOfSubTasks(EpicTask epic) {
+        return new ArrayList<>(epic.getSubTasks().values());
     }
 
+    /**
+     * Get task from container for ID.
+     *
+     * @param id Task's ID.
+     * @return Task or null (if the task doesn't exist).
+     */
     public Task getTask(int id) {
+        ArrayList<HashMap<Integer, ? extends Task>> aList = new ArrayList<>();
+        aList.add(taskContainer.getOrdinaryTaskMap());
+        aList.add(taskContainer.getEpicTaskMap());
+        aList.add(taskContainer.getSubTaskMap());
+        for (HashMap<Integer, ? extends Task> map : aList) {
+            for (Task task : map.values()) {
+                if (task.getId() == id) {
+                    return task;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove task from container for ID.
+     *
+     * @param id task's ID.
+     * @return removed task or null (if the task doesn't exist)
+     */
+    public Task removeTask(int id) {
+        ArrayList<HashMap<Integer, ? extends Task>> aList = new ArrayList<>();
+        aList.add(taskContainer.getOrdinaryTaskMap());
+        aList.add(taskContainer.getEpicTaskMap());
+        aList.add(taskContainer.getSubTaskMap());
+        for (HashMap<Integer, ? extends Task> map : aList) {
+            if (map.containsKey(id)) {
+                return map.remove(id);
+            }
+        }
         return null;
     }
 
     public void removeAllTasks() {
-
+        taskContainer.getOrdinaryTaskMap().clear();
+        taskContainer.getEpicTaskMap().clear();
+        taskContainer.getSubTaskMap().clear();
     }
 
     public <T extends Task> void addTask(T task) {
@@ -64,10 +105,14 @@ public final class Manager {
     private void addSubTask(SubTask task) {
         EpicTask epic = task.getParentEpicTask();
         taskContainer.getSubTaskMap().put(task.getId(), task);
-        epic.getSubTasks().add(task);
+        epic.getSubTasks().put(task.getId(), task);
     }
 
-    public void updateTask(Task task, int id) {
+    public void updateTask(Task task, TaskStatus status) {
+        addTask(TaskUpdater.updateStatus(task, status));
+    }
+
+    public void updateTask(SubTask task, TaskStatus status) {
 
     }
 

@@ -1,6 +1,6 @@
 package com.github.patbattb.hw2.domain;
 
-import com.github.patbattb.hw2.service.Identifier;
+import com.github.patbattb.hw2.service.IdProvider;
 
 /**
  * A base class for task.
@@ -8,15 +8,22 @@ import com.github.patbattb.hw2.service.Identifier;
 public class Task {
 
     private final int id;
-    private String title;
-    private String description;
-    private TaskStatus taskStatus;
+    private final String title;
+    private final String description;
+    private final TaskStatus taskStatus;
 
     public Task(String title, String description) {
-        this.id = Identifier.getNewId();
+        this.id = IdProvider.getNewId();
         this.title = title;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
+    }
+
+    public Task(int id, String title, String description, TaskStatus taskStatus) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.taskStatus = taskStatus;
     }
 
     /**
@@ -38,30 +45,12 @@ public class Task {
     }
 
     /**
-     * Task's title can be sets when task renaming is needed.
-     *
-     * @param title task's title.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
      * Getter.
      *
      * @return task's description.
      */
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Can be sets when task's description change is needed.
-     *
-     * @param description task's description.
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**
@@ -74,11 +63,17 @@ public class Task {
     }
 
     /**
-     * Sets new task's status.
+     * Overridden method toString.
      *
-     * @param taskStatus task's status (NEW, IN_PROGRESS, DONE).
+     * @return String representation of the field values.
      */
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+    @Override
+    public String toString() {
+        return "Task{"
+                + "id=" + id
+                + ", title='" + title + '\''
+                + ", description='" + description + '\''
+                + ", taskStatus=" + taskStatus
+                + '}';
     }
 }

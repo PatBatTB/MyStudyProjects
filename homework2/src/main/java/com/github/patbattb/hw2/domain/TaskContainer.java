@@ -10,7 +10,7 @@ public final class TaskContainer {
 
     private final HashMap<Integer, Task> ordinaryTaskMap;
     private final HashMap<Integer, EpicTask> epicTaskMap;
-    private final HashMap<Integer, SubTask> subTaskMap; //TODO нужен ли контейнер, если таски хранятся в эпиках?
+    private final HashMap<Integer, SubTask> subTaskMap;
 
     public TaskContainer() {
         ordinaryTaskMap = new HashMap<>();

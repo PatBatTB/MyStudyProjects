@@ -12,7 +12,18 @@ public final class SubTask extends Task {
         this.parentEpicTask = parentEpicTask;
     }
 
+    public SubTask(int id, String title, String description, TaskStatus taskStatus, EpicTask parentEpicTask) {
+        super(id, title, description, taskStatus);
+        this.parentEpicTask = parentEpicTask;
+    }
+
     public EpicTask getParentEpicTask() {
         return parentEpicTask;
+    }
+
+    @Override
+    public String toString() {
+        return "SubTask{ parentEpicTask.id=" + parentEpicTask.getId()
+                + "} " + super.toString();
     }
 }
