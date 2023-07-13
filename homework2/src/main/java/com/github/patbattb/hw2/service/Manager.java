@@ -13,7 +13,6 @@ import java.util.List;
  */
 public final class Manager {
 
-    private static int taskId;
     private final TaskContainer taskContainer;
 
     public Manager() {
@@ -49,24 +48,22 @@ public final class Manager {
     }
 
     public <T extends Task> void addTask(T task) {
-        taskId++;
-        task.setId(taskId);
         if (task.getClass() == EpicTask.class) {
             addEpicTask((EpicTask) task);
         } else if (task.getClass() == SubTask.class) {
             addSubTask((SubTask) task);
         } else {
-            taskContainer.getOrdinaryTaskMap().put(taskId, task);
+            taskContainer.getOrdinaryTaskMap().put(task.getId(), task);
         }
     }
 
     private void addEpicTask(EpicTask task) {
-        taskContainer.getEpicTaskMap().put(taskId, task);
+        taskContainer.getEpicTaskMap().put(task.getId(), task);
     }
 
     private void addSubTask(SubTask task) {
         EpicTask epic = task.getParentEpicTask();
-        taskContainer.getSubTaskMap().put(taskId, task);
+        taskContainer.getSubTaskMap().put(task.getId(), task);
         epic.getSubTasks().add(task);
     }
 

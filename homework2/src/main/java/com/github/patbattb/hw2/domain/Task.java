@@ -1,16 +1,19 @@
 package com.github.patbattb.hw2.domain;
 
+import com.github.patbattb.hw2.service.Identifier;
+
 /**
  * A base class for task.
  */
 public class Task {
 
-    private int id;
+    private final int id;
     private String title;
     private String description;
     private TaskStatus taskStatus;
 
     public Task(String title, String description) {
+        this.id = Identifier.getNewId();
         this.title = title;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
@@ -23,15 +26,6 @@ public class Task {
      */
     public int getId() {
         return id;
-    }
-
-    /**
-     * ID doesn't can be set manually. The param must be sets in the addTask() method of Manager class.
-     *
-     * @param id unique ID of task.
-     */
-    public void setId(int id) {
-        this.id = id;
     }
 
     /**

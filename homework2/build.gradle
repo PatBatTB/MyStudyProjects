@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.github.patbattb'
-version = '0.0.1'
+version = '0.0.2'
 mainClassName = 'com.github.patbattb.hw2.Main'
 
 repositories {
