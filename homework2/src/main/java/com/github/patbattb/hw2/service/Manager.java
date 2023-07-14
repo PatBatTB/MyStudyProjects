@@ -67,19 +67,28 @@ public final class Manager {
      * Remove task from container for ID.
      *
      * @param id task's ID.
-     * @return removed task or null (if the task doesn't exist)
      */
-    public Task removeTask(int id) {
+    public void removeTask(int id) {
         ArrayList<HashMap<Integer, ? extends Task>> aList = new ArrayList<>();
         aList.add(taskContainer.getOrdinaryTaskMap());
         aList.add(taskContainer.getEpicTaskMap());
         aList.add(taskContainer.getSubTaskMap());
         for (HashMap<Integer, ? extends Task> map : aList) {
             if (map.containsKey(id)) {
-                return map.remove(id);
+                Task removedTask = map.remove(id);
+                if (removedTask instanceof SubTask removedSubTask) {
+                    EpicTask newEpic = removedSubTask.getParentEpicTask();
+                    newEpic.getSubTasks().remove(removedSubTask.getId());
+                    EpicTask updateEpic = TaskUpdater.calculateEpicStatus(newEpic);
+                    addTask(updateEpic);
+                } else if (removedTask instanceof EpicTask removedEpicTask) {
+                    for (SubTask subTask : removedEpicTask.getSubTasks().values()) {
+                        taskContainer.getSubTaskMap().remove(subTask.getId());
+                    }
+                }
+                return;
             }
         }
-        return null;
     }
 
     public void removeAllTasks() {
@@ -106,6 +115,10 @@ public final class Manager {
         EpicTask epic = task.getParentEpicTask();
         taskContainer.getSubTaskMap().put(task.getId(), task);
         epic.getSubTasks().put(task.getId(), task);
+        if (epic.getSubTasks().size() > 1) {
+            updateTask(task, task.getTaskStatus());
+        }
+
     }
 
     public void updateTask(Task task, TaskStatus status) {
@@ -113,6 +126,11 @@ public final class Manager {
     }
 
     public void updateTask(SubTask task, TaskStatus status) {
+        SubTask newTask = TaskUpdater.updateStatus(task, status);
+        EpicTask newEpic = newTask.getParentEpicTask();
+        taskContainer.getSubTaskMap().put(newTask.getId(), newTask);
+        newEpic.getSubTasks().put(newTask.getId(), newTask);
+        addTask(newEpic);
 
     }
 
