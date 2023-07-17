@@ -1,9 +1,9 @@
 package com.github.patbattb.hw2.service;
 
-import com.github.patbattb.hw2.domain.EpicTask;
-import com.github.patbattb.hw2.domain.SubTask;
-import com.github.patbattb.hw2.domain.Task;
 import com.github.patbattb.hw2.domain.TaskStatus;
+import com.github.patbattb.hw2.domain.task.EpicTask;
+import com.github.patbattb.hw2.domain.task.SubTask;
+import com.github.patbattb.hw2.domain.task.Task;
 
 import java.util.HashMap;
 

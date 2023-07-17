@@ -1,8 +1,8 @@
 package com.github.patbattb.hw2.service;
 
-import com.github.patbattb.hw2.domain.EpicTask;
-import com.github.patbattb.hw2.domain.SubTask;
-import com.github.patbattb.hw2.domain.Task;
+import com.github.patbattb.hw2.domain.task.EpicTask;
+import com.github.patbattb.hw2.domain.task.SubTask;
+import com.github.patbattb.hw2.domain.task.Task;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
