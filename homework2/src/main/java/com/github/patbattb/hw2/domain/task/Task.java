@@ -6,7 +6,7 @@ import com.github.patbattb.hw2.service.IdProvider;
 /**
  * A base class for task.
  */
-public class Task {
+public sealed class Task permits EpicTask, SubTask {
 
     private final int id;
     private final String title;

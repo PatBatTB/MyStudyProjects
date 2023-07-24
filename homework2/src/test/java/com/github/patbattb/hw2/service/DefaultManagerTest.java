@@ -9,21 +9,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class ManagerTest {
+class DefaultManagerTest {
 
-    private Manager manager;
+    private DefaultManager defaultManager;
 
     @BeforeEach
     void setUp() {
-        manager = new Manager();
+        defaultManager = new DefaultManager();
     }
 
     @Test
     @DisplayName("Test adding an ordinary task to the right map in the container")
     void shouldOrdinaryTaskAddInRightMap() {
         Task task = new Task("testTitle", "testDescription");
-        manager.addTask(task);
-        Assertions.assertThat(manager.getTaskContainer().getOrdinaryTaskMap().containsValue(task))
+        defaultManager.addTask(task);
+        Assertions.assertThat(defaultManager.getTaskContainer().getOrdinaryTaskMap().containsValue(task))
                 .isEqualTo(true);
     }
 
@@ -31,8 +31,8 @@ class ManagerTest {
     @DisplayName("Test adding an epic task to the right map in the container.")
     void shouldEpicTaskAddInRightMap() {
         EpicTask task = new EpicTask("testTitle", "testDescription");
-        manager.addTask(task);
-        Assertions.assertThat(manager.getTaskContainer().getEpicTaskMap().containsValue(task))
+        defaultManager.addTask(task);
+        Assertions.assertThat(defaultManager.getTaskContainer().getEpicTaskMap().containsValue(task))
                 .isEqualTo(true);
     }
 
@@ -41,8 +41,8 @@ class ManagerTest {
     void shouldSubTaskAddInRightMap() {
         EpicTask epic = Mockito.mock(EpicTask.class);
         SubTask task = new SubTask("testTitle", "testDescription", epic);
-        manager.addTask(task);
-        Assertions.assertThat(manager.getTaskContainer().getSubTaskMap().containsValue(task))
+        defaultManager.addTask(task);
+        Assertions.assertThat(defaultManager.getTaskContainer().getSubTaskMap().containsValue(task))
                 .isEqualTo(true);
     }
 }
