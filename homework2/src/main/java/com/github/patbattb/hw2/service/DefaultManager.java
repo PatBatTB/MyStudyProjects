@@ -50,10 +50,7 @@ public final class DefaultManager implements Manager {
 
     @Override
     public Task getTask(int id) {
-        ArrayList<HashMap<Integer, ? extends Task>> aList = new ArrayList<>();
-        aList.add(taskContainer.getOrdinaryTaskMap());
-        aList.add(taskContainer.getEpicTaskMap());
-        aList.add(taskContainer.getSubTaskMap());
+        ArrayList<HashMap<Integer, ? extends Task>> aList = taskContainer.getListOfAllTaskMaps();
         for (HashMap<Integer, ? extends Task> map : aList) {
             for (Task task : map.values()) {
                 if (task.getId() == id) {
@@ -66,18 +63,15 @@ public final class DefaultManager implements Manager {
 
     @Override
     public void removeTask(int id) {
-        ArrayList<HashMap<Integer, ? extends Task>> aList = new ArrayList<>();
-        aList.add(taskContainer.getOrdinaryTaskMap());
-        aList.add(taskContainer.getEpicTaskMap());
-        aList.add(taskContainer.getSubTaskMap());
+        ArrayList<HashMap<Integer, ? extends Task>> aList = taskContainer.getListOfAllTaskMaps();
         for (HashMap<Integer, ? extends Task> map : aList) {
             if (map.containsKey(id)) {
                 Task removedTask = map.remove(id);
                 if (removedTask instanceof SubTask removedSubTask) {
-                    EpicTask newEpic = removedSubTask.getParentEpicTask();
-                    newEpic.getSubTasks().remove(removedSubTask.getId());
-                    EpicTask updateEpic = TaskUpdater.calculateEpicStatus(newEpic);
-                    addTask(updateEpic);
+                    EpicTask epic = removedSubTask.getParentEpicTask();
+                    epic.getSubTasks().remove(removedSubTask.getId());
+                    epic = EpicStatusUpdater.updateStatus(epic);
+                    updateTask(epic);
                 } else if (removedTask instanceof EpicTask removedEpicTask) {
                     for (SubTask subTask : removedEpicTask.getSubTasks().values()) {
                         taskContainer.getSubTaskMap().remove(subTask.getId());
@@ -97,20 +91,20 @@ public final class DefaultManager implements Manager {
 
     @Override
     public void addTask(Task task) {
-        if (task.getClass() == EpicTask.class) {
-            addEpicTask((EpicTask) task);
-        } else if (task.getClass() == SubTask.class) {
-            addSubTask((SubTask) task);
+        if (task instanceof EpicTask epic) {
+            addTask(epic);
+        } else if (task instanceof SubTask subTask) {
+            addTask(subTask);
         } else {
             taskContainer.getOrdinaryTaskMap().put(task.getId(), task);
         }
     }
 
-    private void addEpicTask(EpicTask task) {
+    private void addTask(EpicTask task) {
         taskContainer.getEpicTaskMap().put(task.getId(), task);
     }
 
-    private void addSubTask(SubTask task) {
+    private void addTask(SubTask task) {
         EpicTask epic = task.getParentEpicTask();
         taskContainer.getSubTaskMap().put(task.getId(), task);
         epic.getSubTasks().put(task.getId(), task);

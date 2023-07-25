@@ -17,13 +17,6 @@ public final class EpicTask extends Task {
         subTasks = new HashMap<>();
     }
 
-    //TODO переделать TaskUpdater, что бы там использовались только готовые таски (не использовался конструктор)
-    public EpicTask(int id, String title, String description,
-                    TaskStatus taskStatus, HashMap<Integer, SubTask> subTasks) {
-        super(id, title, description, taskStatus);
-        this.subTasks = subTasks;
-    }
-
     private EpicTask(Updater updater) {
         super(updater);
         this.subTasks = updater.subTasks;

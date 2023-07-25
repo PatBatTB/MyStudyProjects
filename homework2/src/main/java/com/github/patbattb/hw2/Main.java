@@ -10,27 +10,19 @@ import com.github.patbattb.hw2.service.Manager;
 public class Main {
     public static void main(String[] args) {
         Manager manager = new DefaultManager();
-        EpicTask epic = new EpicTask("et", "ed");
+        var epic = new EpicTask("t", "d");
         manager.addTask(epic);
-        EpicTask epic1 = new EpicTask("et1", "ed1");
-        manager.addTask(epic1);
-
-        SubTask sub = new SubTask("st", "sd", epic);
+        System.out.println(manager.getListOfAllTasks());
+        var sub = new SubTask("st", "sd", epic);
         manager.addTask(sub);
-
         System.out.println(manager.getListOfAllTasks());
 
-        sub = new SubTask.Updater(sub)
-                .setTitle("nst")
-                .setTaskStatus(TaskStatus.DONE)
-                .update();
+        sub = new SubTask.Updater(sub).setTaskStatus(TaskStatus.DONE).update();
         manager.updateTask(sub);
-
         System.out.println(manager.getListOfAllTasks());
 
-        sub = new SubTask.Updater(sub).setParentEpicTask(epic1).update();
-        manager.updateTask(sub);
-
+        var sub1 = new SubTask("st1", "sd1", epic);
+        manager.addTask(sub1);
         System.out.println(manager.getListOfAllTasks());
     }
 }

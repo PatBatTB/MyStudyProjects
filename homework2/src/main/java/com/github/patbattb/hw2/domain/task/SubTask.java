@@ -14,12 +14,6 @@ public final class SubTask extends Task {
         this.parentEpicTask = parentEpicTask;
     }
 
-    public SubTask(int id, String title, String description,
-                   TaskStatus taskStatus, EpicTask parentEpicTask) {
-        super(id, title, description, taskStatus);
-        this.parentEpicTask = parentEpicTask;
-    }
-
     private SubTask(Updater updater) {
         super(updater);
         this.parentEpicTask = updater.parentEpicTask;

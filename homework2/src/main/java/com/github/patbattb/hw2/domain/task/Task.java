@@ -20,13 +20,6 @@ public sealed class Task permits EpicTask, SubTask {
         this.taskStatus = TaskStatus.NEW;
     }
 
-    public Task(int id, String title, String description, TaskStatus taskStatus) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.taskStatus = taskStatus;
-    }
-
     protected Task(Updater updater) {
         this.id = updater.id;
         this.title = updater.title;
