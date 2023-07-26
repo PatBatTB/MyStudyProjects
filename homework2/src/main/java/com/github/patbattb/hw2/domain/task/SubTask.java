@@ -25,8 +25,9 @@ public final class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{ parentEpicTask.id=" + parentEpicTask.getId()
-                + "} " + super.toString();
+        return super.toString()
+                + "{parentEpicTask.id=" + parentEpicTask.getId()
+                + "} ";
     }
 
     public static final class Updater extends Task.Updater {

@@ -1,28 +1,38 @@
 package com.github.patbattb.hw2;
 
-import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
-import com.github.patbattb.hw2.service.DefaultManager;
-import com.github.patbattb.hw2.service.Manager;
+import com.github.patbattb.hw2.domain.task.Task;
+import com.github.patbattb.hw2.service.Managers;
+import com.github.patbattb.hw2.service.TaskManager;
 
 @SuppressWarnings("hideutilityclassconstructor") //MainClass
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new DefaultManager();
-        var epic = new EpicTask("t", "d");
-        manager.addTask(epic);
-        System.out.println(manager.getListOfAllTasks());
-        var sub = new SubTask("st", "sd", epic);
-        manager.addTask(sub);
-        System.out.println(manager.getListOfAllTasks());
+        TaskManager taskManager = Managers.getDefault();
+        Task task = new Task("t", "d");
+        taskManager.addTask(task);
 
-        sub = new SubTask.Updater(sub).setTaskStatus(TaskStatus.DONE).update();
-        manager.updateTask(sub);
-        System.out.println(manager.getListOfAllTasks());
+        EpicTask epic = new EpicTask("et", "ed");
+        taskManager.addTask(epic);
 
-        var sub1 = new SubTask("st1", "sd1", epic);
-        manager.addTask(sub1);
-        System.out.println(manager.getListOfAllTasks());
+        SubTask sub = new SubTask("st", "sd", epic);
+        taskManager.addTask(sub);
+
+        taskManager.getTask(1);
+        taskManager.getTask(1);
+        taskManager.getTask(1);
+        taskManager.getTask(2);
+        taskManager.getTask(3);
+        taskManager.getTask(3);
+        taskManager.getTask(3);
+        taskManager.getTask(3);
+        taskManager.getTask(3);
+        taskManager.getTask(3);
+
+
+        for (Task t : taskManager.history()) {
+            System.out.println(t);
+        }
     }
 }

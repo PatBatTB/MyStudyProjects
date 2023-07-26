@@ -10,14 +10,16 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Default implementation of {@link Manager} interface
+ * Default implementation of {@link TaskManager} interface
  */
-public final class DefaultManager implements Manager {
+public final class DefaultTaskManager implements TaskManager {
 
     private final TaskContainer taskContainer;
+    private final HistoryManager historyManager;
 
-    public DefaultManager() {
+    public DefaultTaskManager() {
         taskContainer = new TaskContainer();
+        historyManager = Managers.getDefaultHistory();
     }
 
     public TaskContainer getTaskContainer() {
@@ -54,6 +56,7 @@ public final class DefaultManager implements Manager {
         for (HashMap<Integer, ? extends Task> map : aList) {
             for (Task task : map.values()) {
                 if (task.getId() == id) {
+                    historyManager.add(task);
                     return task;
                 }
             }
@@ -147,5 +150,10 @@ public final class DefaultManager implements Manager {
         newEpic.getSubTasks().put(task.getId(), task);
         newEpic = EpicStatusUpdater.updateStatus(newEpic);
         updateTask(newEpic);
+    }
+
+    @Override
+    public List<Task> history() {
+        return historyManager.getHistory();
     }
 }

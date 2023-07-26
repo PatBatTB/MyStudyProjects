@@ -28,8 +28,9 @@ public final class EpicTask extends Task {
 
     @Override
     public String toString() {
-        return "EpicTask{ subTasks.size=" + subTasks.size()
-                + "} " + super.toString();
+        return super.toString()
+                + "{subTasks.size=" + subTasks.size()
+                + "} ";
     }
 
     public static final class Updater extends Task.Updater {

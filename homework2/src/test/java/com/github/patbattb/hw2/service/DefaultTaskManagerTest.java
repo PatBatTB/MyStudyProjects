@@ -9,13 +9,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class DefaultManagerTest {
+class DefaultTaskManagerTest {
 
-    private DefaultManager defaultManager;
+    private DefaultTaskManager defaultManager;
 
     @BeforeEach
     void setUp() {
-        defaultManager = new DefaultManager();
+        defaultManager = new DefaultTaskManager();
     }
 
     @Test

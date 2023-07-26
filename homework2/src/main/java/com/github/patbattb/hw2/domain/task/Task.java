@@ -70,7 +70,8 @@ public sealed class Task permits EpicTask, SubTask {
      */
     @Override
     public String toString() {
-        return "Task{"
+        return this.getClass().getSimpleName()
+                + "{"
                 + "id=" + id
                 + ", title='" + title + '\''
                 + ", description='" + description + '\''

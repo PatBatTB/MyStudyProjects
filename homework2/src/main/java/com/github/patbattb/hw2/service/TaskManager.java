@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * The interface contains methods for working with tasks.
  */
-public interface Manager {
+public interface TaskManager {
 
     ArrayList<Task> getListOfAllTasks();
 
@@ -40,4 +40,11 @@ public interface Manager {
     void addTask(Task task);
 
     void updateTask(Task task);
+
+    /**
+     * Get history list of last viewed tasks.
+     *
+     * @return {@code List<Task>} of last viewed tasks.
+     */
+    List<Task> history();
 }
