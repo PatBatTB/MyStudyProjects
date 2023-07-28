@@ -2,7 +2,7 @@ package com.github.patbattb.hw2.service;
 
 import com.github.patbattb.hw2.domain.task.Task;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Interface for managing the history of viewed tasks.
@@ -16,9 +16,16 @@ public interface HistoryManager {
     void add(Task task);
 
     /**
-     * Returns {@link List} of last viewed tasks.
+     * Remove the task from History for id.
      *
-     * @return {@code List<Task>} of last viewed tasks.
+     * @param id ID of the task.
      */
-    List<Task> getHistory();
+    void remove(int id);
+
+    /**
+     * Returns {@link ArrayList} of last viewed tasks.
+     *
+     * @return {@code ArrayList<Task>} of last viewed tasks.
+     */
+    ArrayList<Task> getHistory();
 }

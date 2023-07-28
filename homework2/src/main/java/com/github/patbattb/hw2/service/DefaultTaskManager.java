@@ -70,6 +70,7 @@ public final class DefaultTaskManager implements TaskManager {
         for (HashMap<Integer, ? extends Task> map : aList) {
             if (map.containsKey(id)) {
                 Task removedTask = map.remove(id);
+                historyManager.remove(id);
                 if (removedTask instanceof SubTask removedSubTask) {
                     EpicTask epic = removedSubTask.getParentEpicTask();
                     epic.getSubTasks().remove(removedSubTask.getId());
@@ -78,6 +79,7 @@ public final class DefaultTaskManager implements TaskManager {
                 } else if (removedTask instanceof EpicTask removedEpicTask) {
                     for (SubTask subTask : removedEpicTask.getSubTasks().values()) {
                         taskContainer.getSubTaskMap().remove(subTask.getId());
+                        historyManager.remove(subTask.getId());
                     }
                 }
                 return;
