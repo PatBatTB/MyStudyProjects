@@ -3,4 +3,5 @@ rootProject.name = 'MyStudyProjects'
 include 'homework1'
 include 'homework2'
 include 'homework3'
+include 'homework4'
 
