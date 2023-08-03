@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Default implementation of {@link TaskManager} interface
  */
-public final class DefaultTaskManager implements TaskManager {
+public class DefaultTaskManager implements TaskManager {
 
     private final TaskContainer taskContainer;
     private final HistoryManager historyManager;
