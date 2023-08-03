@@ -41,3 +41,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Custom ###
+/homework2/src/main/resources/DefaultBackupFile.csv

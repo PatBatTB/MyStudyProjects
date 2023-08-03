@@ -1,21 +1,25 @@
 package com.github.patbattb.hw2.domain.task;
 
 import com.github.patbattb.hw2.domain.TaskStatus;
+import com.github.patbattb.hw2.domain.TaskType;
 
 /**
  * An inheritor of {@link Task}.
  * A part of {@link EpicTask}.
  */
 public final class SubTask extends Task {
+    private final TaskType type;
     private final EpicTask parentEpicTask;
 
     public SubTask(String title, String description, EpicTask parentEpicTask) {
         super(title, description);
+        this.type = TaskType.SUBTASK;
         this.parentEpicTask = parentEpicTask;
     }
 
     private SubTask(Updater updater) {
         super(updater);
+        this.type = updater.type;
         this.parentEpicTask = updater.parentEpicTask;
     }
 
