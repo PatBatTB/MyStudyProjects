@@ -4,9 +4,12 @@ plugins {
     id 'checkstyle'
 }
 
+application {
+    mainClass = 'com.github.patbattb.hw1.Main'
+}
+
 group = 'com.github.patbattb'
 version = '1.0.0'
-mainClassName = 'com.github.patbattb.hw1.Main'
 
 repositories {
     mavenCentral()
@@ -22,7 +25,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes 'Main-Class': application.mainClass
     }
     from (configurations.runtimeClasspath.files.collect {zipTree(it)})
 }
