@@ -17,4 +17,8 @@ public final class IdProvider {
     public static int getNewId() {
         return ++id;
     }
+
+    public static void setStartId(int newId) {
+        id = newId;
+    }
 }

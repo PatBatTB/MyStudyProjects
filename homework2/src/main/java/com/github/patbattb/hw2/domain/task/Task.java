@@ -33,9 +33,9 @@ public sealed class Task permits EpicTask, SubTask {
         this.taskStatus = updater.taskStatus;
     }
 
-    private Task(int id, TaskType type, String title, String description, TaskStatus taskStatus) {
+    protected Task(int id, String title, String description, TaskStatus taskStatus) {
         this.id = id;
-        this.type = type;
+        this.type = TaskType.TASK;
         this.title = title;
         this.description = description;
         this.taskStatus = taskStatus;
@@ -89,11 +89,10 @@ public sealed class Task permits EpicTask, SubTask {
 
     public static Task fromString(List<String> dataList) {
         int id = Integer.parseInt(dataList.get(0));
-        TaskType type = TaskType.valueOf(dataList.get(1));
         String title = dataList.get(2);
         TaskStatus status = TaskStatus.valueOf(dataList.get(3));
         String description = dataList.get(4);
-        return new Task(id, type, title, description, status);
+        return new Task(id, title, description, status);
     }
 
     /**

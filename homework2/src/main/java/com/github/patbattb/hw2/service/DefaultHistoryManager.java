@@ -4,6 +4,7 @@ import com.github.patbattb.hw2.domain.task.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class DefaultHistoryManager implements HistoryManager {
@@ -25,24 +26,25 @@ public final class DefaultHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        Node<Task> newNode = new Node<>(tail, task, null);
+        Node<Task> newNode = new Node<>(null, task, null);
         if (historyMap.containsKey(task.getId())) {
             remove(task.getId());
         }
         historyMap.put(task.getId(), newNode);
         if (size == 0) {
-            head = newNode;
+            tail = newNode;
         } else {
-            tail.next = newNode;
+            head.prev = newNode;
+            newNode.next = head;
         }
-        tail = newNode;
+        head = newNode;
         size++;
-        if (size > MAXIMUM_SIZE) remove(head.value.getId());
+        if (size > MAXIMUM_SIZE) remove(tail.value.getId());
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
-        ArrayList<Task> aList = new ArrayList<>();
+    public List<Task> getHistory() {
+        List<Task> aList = new ArrayList<>();
         for (Node<Task> node = head; node != null; node = node.next) {
             aList.add(node.value);
         }

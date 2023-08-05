@@ -4,6 +4,7 @@ import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.TaskType;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * An inheritor of {@link Task}.
@@ -26,6 +27,12 @@ public final class EpicTask extends Task {
         this.subTasks = updater.subTasks;
     }
 
+    private EpicTask(int id, String title, String description, TaskStatus taskStatus) {
+        super(id, title, description, taskStatus);
+        this.type = TaskType.EPIC;
+        this.subTasks = new HashMap<>();
+    }
+
     public HashMap<Integer, SubTask> getSubTasks() {
         return subTasks;
     }
@@ -34,6 +41,14 @@ public final class EpicTask extends Task {
     public String toString() {
         return String.join(",",
                 String.valueOf(getId()), type.name(), getTitle(), getTaskStatus().name(), getDescription());
+    }
+
+    public static EpicTask fromString(List<String> dataList) {
+        int id = Integer.parseInt(dataList.get(0));
+        String title = dataList.get(2);
+        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
+        String description = dataList.get(4);
+        return new EpicTask(id, title, description, status);
     }
 
     public static final class Updater extends Task.Updater {

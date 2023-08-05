@@ -3,6 +3,8 @@ package com.github.patbattb.hw2.domain.task;
 import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.TaskType;
 
+import java.util.List;
+
 /**
  * An inheritor of {@link Task}.
  * A part of {@link EpicTask}.
@@ -23,6 +25,12 @@ public final class SubTask extends Task {
         this.parentEpicTask = updater.parentEpicTask;
     }
 
+    private SubTask(int id, String title, String description, TaskStatus taskStatus, EpicTask parentEpicTask) {
+        super(id, title, description, taskStatus);
+        this.type = TaskType.SUBTASK;
+        this.parentEpicTask = parentEpicTask;
+    }
+
     public EpicTask getParentEpicTask() {
         return parentEpicTask;
     }
@@ -33,12 +41,21 @@ public final class SubTask extends Task {
                 getTitle(), getTaskStatus().name(), getDescription(), String.valueOf(getParentEpicTask().getId()));
     }
 
+    public static SubTask fromString(List<String> dataList, EpicTask epic) {
+        int id = Integer.parseInt(dataList.get(0));
+        String title = dataList.get(2);
+        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
+        String description = dataList.get(4);
+        return new SubTask(id, title, description, status, epic);
+    }
+
     public static final class Updater extends Task.Updater {
         private EpicTask parentEpicTask;
 
         public Updater(SubTask subTask) {
             this.id = subTask.getId();
             this.title = subTask.getTitle();
+            this.type = subTask.type;
             this.description = subTask.getDescription();
             this.taskStatus = subTask.getTaskStatus();
             this.parentEpicTask = subTask.getParentEpicTask();
