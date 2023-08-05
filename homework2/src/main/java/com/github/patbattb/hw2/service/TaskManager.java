@@ -4,7 +4,6 @@ import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
 import com.github.patbattb.hw2.domain.task.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public interface TaskManager {
 
-    ArrayList<Task> getListOfAllTasks();
+    List<Task> getListOfAllTasks();
 
     List<Task> getListOfOrdinaryTasks();
 

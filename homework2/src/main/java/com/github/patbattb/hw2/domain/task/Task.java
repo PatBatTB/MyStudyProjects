@@ -4,6 +4,8 @@ import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.TaskType;
 import com.github.patbattb.hw2.service.IdProvider;
 
+import java.util.List;
+
 /**
  * A base class for task.
  */
@@ -29,6 +31,14 @@ public sealed class Task permits EpicTask, SubTask {
         this.title = updater.title;
         this.description = updater.description;
         this.taskStatus = updater.taskStatus;
+    }
+
+    private Task(int id, TaskType type, String title, String description, TaskStatus taskStatus) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.description = description;
+        this.taskStatus = taskStatus;
     }
 
     /**
@@ -75,6 +85,15 @@ public sealed class Task permits EpicTask, SubTask {
     @Override
     public String toString() {
         return String.join(",", String.valueOf(id), type.name(), title, taskStatus.name(), description);
+    }
+
+    public static Task fromString(List<String> dataList) {
+        int id = Integer.parseInt(dataList.get(0));
+        TaskType type = TaskType.valueOf(dataList.get(1));
+        String title = dataList.get(2);
+        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
+        String description = dataList.get(4);
+        return new Task(id, type, title, description, status);
     }
 
     /**
