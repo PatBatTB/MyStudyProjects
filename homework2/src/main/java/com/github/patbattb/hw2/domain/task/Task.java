@@ -1,7 +1,10 @@
 package com.github.patbattb.hw2.domain.task;
 
 import com.github.patbattb.hw2.domain.TaskStatus;
+import com.github.patbattb.hw2.domain.TaskType;
 import com.github.patbattb.hw2.service.IdProvider;
+
+import java.util.List;
 
 /**
  * A base class for task.
@@ -9,12 +12,14 @@ import com.github.patbattb.hw2.service.IdProvider;
 public sealed class Task permits EpicTask, SubTask {
 
     private final int id;
+    private final TaskType type;
     private final String title;
     private final String description;
     private final TaskStatus taskStatus;
 
     public Task(String title, String description) {
         this.id = IdProvider.getNewId();
+        this.type = TaskType.TASK;
         this.title = title;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
@@ -22,9 +27,18 @@ public sealed class Task permits EpicTask, SubTask {
 
     protected Task(Updater updater) {
         this.id = updater.id;
+        this.type = updater.type;
         this.title = updater.title;
         this.description = updater.description;
         this.taskStatus = updater.taskStatus;
+    }
+
+    private Task(int id, TaskType type, String title, String description, TaskStatus taskStatus) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.description = description;
+        this.taskStatus = taskStatus;
     }
 
     /**
@@ -70,13 +84,16 @@ public sealed class Task permits EpicTask, SubTask {
      */
     @Override
     public String toString() {
-        return this.getClass().getSimpleName()
-                + "{"
-                + "id=" + id
-                + ", title='" + title + '\''
-                + ", description='" + description + '\''
-                + ", taskStatus=" + taskStatus
-                + '}';
+        return String.join(",", String.valueOf(id), type.name(), title, taskStatus.name(), description);
+    }
+
+    public static Task fromString(List<String> dataList) {
+        int id = Integer.parseInt(dataList.get(0));
+        TaskType type = TaskType.valueOf(dataList.get(1));
+        String title = dataList.get(2);
+        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
+        String description = dataList.get(4);
+        return new Task(id, type, title, description, status);
     }
 
     /**
@@ -87,6 +104,7 @@ public sealed class Task permits EpicTask, SubTask {
     @SuppressWarnings("VisibilityModifier")
     public static class Updater {
         protected int id;
+        protected TaskType type;
         protected String title;
         protected String description;
         protected TaskStatus taskStatus;
@@ -96,6 +114,7 @@ public sealed class Task permits EpicTask, SubTask {
 
         public Updater(Task task) {
             this.id = task.id;
+            this.type = task.type;
             this.title = task.title;
             this.description = task.description;
             this.taskStatus = task.taskStatus;

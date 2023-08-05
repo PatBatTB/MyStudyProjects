@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Default implementation of {@link TaskManager} interface
  */
-public final class DefaultTaskManager implements TaskManager {
+public class DefaultTaskManager implements TaskManager {
 
     private final TaskContainer taskContainer;
     private final HistoryManager historyManager;
@@ -22,34 +22,64 @@ public final class DefaultTaskManager implements TaskManager {
         historyManager = Managers.getDefaultHistory();
     }
 
+    /**
+     * Getter.
+     *
+     * @return the container with {@link HashMap} of {@link Task}s.
+     */
     public TaskContainer getTaskContainer() {
         return taskContainer;
     }
 
+
+    /**
+     * Getter.
+     *
+     * @return {@link List} of all contained tasks (including epic-tasks and sub-tasks) in the manager.
+     */
     @Override
-    public ArrayList<Task> getListOfAllTasks() {
-        ArrayList<Task> taskList = new ArrayList<>();
+    public List<Task> getListOfAllTasks() {
+        List<Task> taskList = new ArrayList<>();
         taskList.addAll(taskContainer.getOrdinaryTaskMap().values());
         taskList.addAll(taskContainer.getEpicTaskMap().values());
         taskList.addAll(taskContainer.getSubTaskMap().values());
         return taskList;
     }
 
+    /**
+     * Getter.
+     *
+     * @return {@link List} of all contained {@link Task} in the manager.
+     */
     @Override
     public List<Task> getListOfOrdinaryTasks() {
         return new ArrayList<>(taskContainer.getOrdinaryTaskMap().values());
     }
 
+    /**
+     * Getter.
+     * @return {@link List} of all contained {@link EpicTask} in the manager.
+     */
     @Override
     public List<EpicTask> getListOfEpicTasks() {
         return new ArrayList<>(taskContainer.getEpicTaskMap().values());
     }
 
+    /**
+     * Getter.
+     * @param epic the epic task to get the subtasks into this.
+     * @return {@link List} of all contained {@link SubTask} in the {@param epic}.
+     */
     @Override
     public List<SubTask> getListOfSubTasks(EpicTask epic) {
         return new ArrayList<>(epic.getSubTasks().values());
     }
 
+    /**
+     * Getter.
+     * @param id Task's ID.
+     * @return {@link Task} with the corresponding ID.
+     */
     @Override
     public Task getTask(int id) {
         ArrayList<HashMap<Integer, ? extends Task>> aList = taskContainer.getListOfAllTaskMaps();
@@ -64,6 +94,11 @@ public final class DefaultTaskManager implements TaskManager {
         return null;
     }
 
+
+    /**
+     * Removing a task with the corresponding ID from the manager.
+     * @param id task's ID.
+     */
     @Override
     public void removeTask(int id) {
         ArrayList<HashMap<Integer, ? extends Task>> aList = taskContainer.getListOfAllTaskMaps();
@@ -87,6 +122,9 @@ public final class DefaultTaskManager implements TaskManager {
         }
     }
 
+    /**
+     * Removing all tasks from the manager.
+     */
     @Override
     public void removeAllTasks() {
         taskContainer.getOrdinaryTaskMap().clear();
@@ -94,6 +132,10 @@ public final class DefaultTaskManager implements TaskManager {
         taskContainer.getSubTaskMap().clear();
     }
 
+    /**
+     * Adding task to manager.
+     * @param task {@link Task} or it's inheritor to adding to the manager.
+     */
     @Override
     public void addTask(Task task) {
         if (task instanceof EpicTask epic) {
@@ -119,6 +161,10 @@ public final class DefaultTaskManager implements TaskManager {
 
     }
 
+    /**
+     * Updating task. Task from params overwrite task with the same ID in the manager.
+     * @param task updated version of exists task.
+     */
     @Override
     public void updateTask(Task task) {
         if (task instanceof EpicTask epic) {
@@ -154,6 +200,11 @@ public final class DefaultTaskManager implements TaskManager {
         updateTask(newEpic);
     }
 
+    /**
+     * Returns history of the viewed tasks.
+     * Task is considered reviewed when it has been get through {@link TaskManager#getTask(int)} method.
+     * @return {@link List} of viewed tasks.
+     */
     @Override
     public List<Task> history() {
         return historyManager.getHistory();
