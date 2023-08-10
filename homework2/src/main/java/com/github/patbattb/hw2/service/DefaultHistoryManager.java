@@ -53,6 +53,8 @@ public final class DefaultHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
+        if (!historyMap.containsKey(id)) return;
+
         Node<Task> node = historyMap.get(id);
 
         if (node == head && node == tail) {
