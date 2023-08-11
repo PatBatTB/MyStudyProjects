@@ -27,7 +27,14 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
 
     public FileBackedTaskManager() {
         super();
-        this.backup = Path.of("src", "main", "resources", FILENAME);
+        backup = Path.of("src", "main", "resources", FILENAME);
+        load();
+        IdProvider.setStartId(maxId);
+    }
+
+    public FileBackedTaskManager(Path path) {
+        super();
+        backup = path;
         load();
         IdProvider.setStartId(maxId);
     }
@@ -66,8 +73,10 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
     /**
      * Backing up manager to file.
      * Creates path's directories and the backup file is they don't exist.
+     * Does nothing if manager doesn't have tasks.
      */
     private void save() {
+        if (getListOfAllTasks().isEmpty()) return;
         try {
             createFile();
             writeData();

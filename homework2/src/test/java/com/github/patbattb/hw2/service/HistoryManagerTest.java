@@ -66,33 +66,33 @@ abstract class HistoryManagerTest<T extends HistoryManager> {
     @Test
     @DisplayName("Check removing a task from start of the history list.")
     void shouldTaskRemovesFromStartOfHistory() {
-        List<Task> resultList = List.of(task1, task);
+        List<Task> assertList = List.of(task1, task);
         historyManager.add(task);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.remove(task2.getId());
-        assertThatList(historyManager.getHistory()).isEqualTo(resultList);
+        assertThatList(historyManager.getHistory()).isEqualTo(assertList);
     }
 
     @Test
     @DisplayName("Check removing a task from end of the history list.")
     void shouldTaskRemovesFromEndOfHistory() {
-        List<Task> resultList = List.of(task2, task1);
+        List<Task> assertList = List.of(task2, task1);
         historyManager.add(task);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.remove(task.getId());
-        assertThatList(historyManager.getHistory()).isEqualTo(resultList);
+        assertThatList(historyManager.getHistory()).isEqualTo(assertList);
     }
 
     @Test
     @DisplayName("Check removing a task from the middle of the history list.")
     void shouldTaskRemovesFromMiddleOfHistory() {
-        List<Task> resultList = List.of(task2, task);
+        List<Task> assertList = List.of(task2, task);
         historyManager.add(task);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.remove(task1.getId());
-        assertThatList(historyManager.getHistory()).isEqualTo(resultList);
+        assertThatList(historyManager.getHistory()).isEqualTo(assertList);
     }
 }

@@ -2,6 +2,7 @@ package com.github.patbattb.hw2.service;
 
 import com.github.patbattb.hw2.domain.task.Task;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,10 @@ public final class Managers {
      */
     public static FileBackedTaskManager getFileBackedTaskManager() {
         return new FileBackedTaskManager();
+    }
+
+    public static FileBackedTaskManager getFileBackedTaskManager(Path path) {
+        return new FileBackedTaskManager(path);
     }
 
     /**

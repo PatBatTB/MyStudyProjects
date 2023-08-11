@@ -202,7 +202,7 @@ public class DefaultTaskManager implements TaskManager {
 
     /**
      * Returns history of the viewed tasks.
-     * Task is considered reviewed when it has been get through {@link TaskManager#getTask(int)} method.
+     * Task is considered reviewed when it has been got through {@link TaskManager#getTask(int)} method.
      * @return {@link List} of viewed tasks.
      */
     @Override
