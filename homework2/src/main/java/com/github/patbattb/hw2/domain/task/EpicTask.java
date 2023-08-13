@@ -3,6 +3,8 @@ package com.github.patbattb.hw2.domain.task;
 import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,9 +16,14 @@ public final class EpicTask extends Task {
     private final HashMap<Integer, SubTask> subTasks;
     private final TaskType type;
 
-
     public EpicTask(String title, String description) {
         super(title, description);
+        this.type = TaskType.EPIC;
+        this.subTasks = new HashMap<>();
+    }
+
+    public EpicTask(String title, String description, LocalDateTime startTime, Duration duration) {
+        super(title, description, startTime, duration);
         this.type = TaskType.EPIC;
         this.subTasks = new HashMap<>();
     }
@@ -51,6 +58,7 @@ public final class EpicTask extends Task {
         return new EpicTask(id, title, description, status);
     }
 
+    //TODO убрать сеттеры, которые должны подтягиваться из сабтасков.
     public static final class Updater extends Task.Updater {
         private final HashMap<Integer, SubTask> subTasks;
 
@@ -61,6 +69,8 @@ public final class EpicTask extends Task {
             this.description = task.getDescription();
             this.taskStatus = task.getTaskStatus();
             this.subTasks = task.getSubTasks();
+            this.startTime = task.getStartTime();
+            this.duration = task.getDuration();
         }
 
         @Override
@@ -78,6 +88,18 @@ public final class EpicTask extends Task {
         @Override
         public Updater setTaskStatus(TaskStatus taskStatus) {
             this.taskStatus = taskStatus;
+            return this;
+        }
+
+        @Override
+        public Updater setStartTime(LocalDateTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        @Override
+        public Updater setDuration(Duration duration) {
+            this.duration = duration;
             return this;
         }
 

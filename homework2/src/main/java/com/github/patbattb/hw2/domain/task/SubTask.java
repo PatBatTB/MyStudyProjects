@@ -3,6 +3,8 @@ package com.github.patbattb.hw2.domain.task;
 import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -15,6 +17,13 @@ public final class SubTask extends Task {
 
     public SubTask(String title, String description, EpicTask parentEpicTask) {
         super(title, description);
+        this.type = TaskType.SUBTASK;
+        this.parentEpicTask = parentEpicTask;
+    }
+
+    public SubTask(String title, String description,
+                   LocalDateTime startTime, Duration duration, EpicTask parentEpicTask) {
+        super(title, description, startTime, duration);
         this.type = TaskType.SUBTASK;
         this.parentEpicTask = parentEpicTask;
     }
@@ -59,6 +68,8 @@ public final class SubTask extends Task {
             this.description = subTask.getDescription();
             this.taskStatus = subTask.getTaskStatus();
             this.parentEpicTask = subTask.getParentEpicTask();
+            this.startTime = subTask.getStartTime();
+            this.duration = subTask.getDuration();
         }
 
         @Override
@@ -81,6 +92,18 @@ public final class SubTask extends Task {
 
         public Updater setParentEpicTask(EpicTask parentEpicTask) {
             this.parentEpicTask = parentEpicTask;
+            return this;
+        }
+
+        @Override
+        public Updater setStartTime(LocalDateTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        @Override
+        public Updater setDuration(Duration duration) {
+            this.duration = duration;
             return this;
         }
 

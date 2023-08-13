@@ -4,6 +4,8 @@ import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.TaskType;
 import com.github.patbattb.hw2.service.IdProvider;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,6 +18,9 @@ public sealed class Task permits EpicTask, SubTask {
     private final String title;
     private final String description;
     private final TaskStatus taskStatus;
+    private final LocalDateTime startTime;
+    private final Duration duration;
+    private final LocalDateTime endTime;
 
     public Task(String title, String description) {
         this.id = IdProvider.getNewId();
@@ -23,6 +28,20 @@ public sealed class Task permits EpicTask, SubTask {
         this.title = title;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
+        this.startTime = null;
+        this.duration = null;
+        this.endTime = null;
+    }
+
+    public Task(String title, String description, LocalDateTime startTime, Duration duration) {
+        this.id = IdProvider.getNewId();
+        this.type = TaskType.TASK;
+        this.title = title;
+        this.description = description;
+        this.taskStatus = TaskStatus.NEW;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime = startTime.plus(duration);
     }
 
     protected Task(Updater updater) {
@@ -31,6 +50,9 @@ public sealed class Task permits EpicTask, SubTask {
         this.title = updater.title;
         this.description = updater.description;
         this.taskStatus = updater.taskStatus;
+        this.startTime = updater.startTime;
+        this.duration = updater.duration;
+        this.endTime = startTime.plus(duration);
     }
 
     protected Task(int id, String title, String description, TaskStatus taskStatus) {
@@ -39,6 +61,9 @@ public sealed class Task permits EpicTask, SubTask {
         this.title = title;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.startTime = null;
+        this.duration = null;
+        this.endTime = null;
     }
 
     /**
@@ -78,6 +103,33 @@ public sealed class Task permits EpicTask, SubTask {
     }
 
     /**
+     * Getter.
+     *
+     * @return Start time of the task.
+     */
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return Duration of the task.
+     */
+    public Duration getDuration() {
+        return duration;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return End time of the task.
+     */
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    /**
      * Overridden method toString.
      *
      * @return String representation of the field values.
@@ -107,6 +159,9 @@ public sealed class Task permits EpicTask, SubTask {
         protected String title;
         protected String description;
         protected TaskStatus taskStatus;
+        protected LocalDateTime startTime;
+        protected Duration duration;
+        protected LocalDateTime endTime;
 
         protected Updater() {
         }
@@ -117,6 +172,8 @@ public sealed class Task permits EpicTask, SubTask {
             this.title = task.title;
             this.description = task.description;
             this.taskStatus = task.taskStatus;
+            this.startTime = task.startTime;
+            this.duration = task.duration;
         }
 
         /**
@@ -149,6 +206,27 @@ public sealed class Task permits EpicTask, SubTask {
          */
         public Updater setTaskStatus(TaskStatus taskStatus) {
             this.taskStatus = taskStatus;
+            return this;
+        }
+
+        /**
+         * Sets new start time of the task.
+         *
+         * @param startTime a new time of start.
+         */
+        public Updater setStartTime(LocalDateTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+
+        /**
+         * Sets new duration of the task.
+         *
+         * @param duration new value of duration.
+         */
+        public Updater setDuration(Duration duration) {
+            this.duration = duration;
             return this;
         }
 
