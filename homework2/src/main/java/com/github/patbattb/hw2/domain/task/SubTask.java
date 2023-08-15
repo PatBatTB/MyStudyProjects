@@ -34,8 +34,9 @@ public final class SubTask extends Task {
         this.parentEpicTask = updater.parentEpicTask;
     }
 
-    private SubTask(int id, String title, String description, TaskStatus taskStatus, EpicTask parentEpicTask) {
-        super(id, title, description, taskStatus);
+    private SubTask(int id, String title, String description, TaskStatus taskStatus,
+                    LocalDateTime startTime, Duration duration, EpicTask parentEpicTask) {
+        super(id, title, description, taskStatus, startTime, duration);
         this.type = TaskType.SUBTASK;
         this.parentEpicTask = parentEpicTask;
     }
@@ -44,18 +45,19 @@ public final class SubTask extends Task {
         return parentEpicTask;
     }
 
-    @Override
-    public String toString() {
-        return String.join(",", String.valueOf(getId()), type.name(),
-                getTitle(), getTaskStatus().name(), getDescription(), String.valueOf(getParentEpicTask().getId()));
-    }
-
     public static SubTask fromString(List<String> dataList, EpicTask epic) {
         int id = Integer.parseInt(dataList.get(0));
         String title = dataList.get(2);
         TaskStatus status = TaskStatus.valueOf(dataList.get(3));
         String description = dataList.get(4);
-        return new SubTask(id, title, description, status, epic);
+        LocalDateTime startTime = "null".equals(dataList.get(5)) ? null : LocalDateTime.parse(dataList.get(5));
+        Duration duration = "null".equals(dataList.get(6)) ? null : Duration.parse(dataList.get(6));
+        return new SubTask(id, title, description, status, startTime, duration, epic);
+    }
+
+    @Override
+    public String toString() {
+        return String.join(",", super.toString(), String.valueOf(parentEpicTask.getId()));
     }
 
     public static final class Updater extends Task.Updater {

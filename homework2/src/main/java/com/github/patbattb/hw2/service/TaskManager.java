@@ -36,6 +36,8 @@ public interface TaskManager {
 
     void removeAllTasks();
 
+    void addTask(Task... tasks);
+
     void addTask(Task task);
 
     void updateTask(Task task);
@@ -46,4 +48,9 @@ public interface TaskManager {
      * @return {@code List<Task>} of last viewed tasks.
      */
     List<Task> history();
+
+    /**
+     * Get history of lst viewed tasks in the natural order of {@link Task#startTime}
+     */
+    List<Task> priorityHistory();
 }

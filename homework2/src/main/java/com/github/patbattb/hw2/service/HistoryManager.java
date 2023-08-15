@@ -23,8 +23,15 @@ public interface HistoryManager {
     void remove(int id);
 
     /**
-     * Returns {@link List} of last viewed tasks in order from newest to oldest.
-     * @return {@code ArrayList<Task>} of last viewed tasks.
+     * Returns {@link List} of the last viewed tasks in order from newest to oldest.
+     * @return {@link List<Task>} of last viewed tasks.
      */
     List<Task> getHistory();
+
+    /**
+     * Returns {@link List} of the last viewed tasks in the natural order of {@link Task#startTime} field.
+     *
+     * @return {@link List<Task>} of last viewed tasks.
+     */
+    List<Task> getPriorityHistory();
 }

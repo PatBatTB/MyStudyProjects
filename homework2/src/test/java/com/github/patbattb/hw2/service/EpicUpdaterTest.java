@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class EpicStatusUpdaterTest {
+class EpicUpdaterTest {
 
     private EpicTask epic;
     private SubTask sub;
@@ -24,7 +24,7 @@ class EpicStatusUpdaterTest {
     @Test
     @DisplayName("Check updateStatus() with the empty list of the subtasks")
     void shouldUpdateReturnsNEWStatusWithEmptySubTasksList() {
-        epic = EpicStatusUpdater.updateStatus(epic);
+        epic = EpicUpdater.updateStatus(epic);
         Assertions.assertThat(epic.getTaskStatus()).isEqualTo(TaskStatus.NEW);
     }
 
@@ -33,7 +33,7 @@ class EpicStatusUpdaterTest {
     void shouldUpdateReturnsNEWStatusWithNEWStatusInAllSubtasks() {
         sub = new SubTask.Updater(sub).setParentEpicTask(epic).setTaskStatus(TaskStatus.NEW).update();
         sub1 = new SubTask.Updater(sub1).setParentEpicTask(epic).setTaskStatus(TaskStatus.NEW).update();
-        epic = EpicStatusUpdater.updateStatus(epic);
+        epic = EpicUpdater.updateStatus(epic);
         Assertions.assertThat(epic.getTaskStatus()).isEqualTo(TaskStatus.NEW);
     }
 
@@ -44,7 +44,7 @@ class EpicStatusUpdaterTest {
         sub1 = new SubTask.Updater(sub1).setParentEpicTask(epic).setTaskStatus(TaskStatus.DONE).update();
         epic.getSubTasks().put(sub.getId(), sub);
         epic.getSubTasks().put(sub1.getId(), sub1);
-        epic = EpicStatusUpdater.updateStatus(epic);
+        epic = EpicUpdater.updateStatus(epic);
         Assertions.assertThat(epic.getTaskStatus()).isEqualTo(TaskStatus.DONE);
     }
 
@@ -55,7 +55,7 @@ class EpicStatusUpdaterTest {
         sub1 = new SubTask.Updater(sub1).setParentEpicTask(epic).setTaskStatus(TaskStatus.IN_PROGRESS).update();
         epic.getSubTasks().put(sub.getId(), sub);
         epic.getSubTasks().put(sub1.getId(), sub1);
-        epic = EpicStatusUpdater.updateStatus(epic);
+        epic = EpicUpdater.updateStatus(epic);
         Assertions.assertThat(epic.getTaskStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
     }
 
@@ -66,7 +66,7 @@ class EpicStatusUpdaterTest {
         sub1 = new SubTask.Updater(sub1).setParentEpicTask(epic).setTaskStatus(TaskStatus.DONE).update();
         epic.getSubTasks().put(sub.getId(), sub);
         epic.getSubTasks().put(sub1.getId(), sub1);
-        epic = EpicStatusUpdater.updateStatus(epic);
+        epic = EpicUpdater.updateStatus(epic);
         Assertions.assertThat(epic.getTaskStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
     }
 }

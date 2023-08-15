@@ -109,7 +109,7 @@ public class DefaultTaskManager implements TaskManager {
                 if (removedTask instanceof SubTask removedSubTask) {
                     EpicTask epic = removedSubTask.getParentEpicTask();
                     epic.getSubTasks().remove(removedSubTask.getId());
-                    epic = EpicStatusUpdater.updateStatus(epic);
+                    epic = EpicUpdater.updateStatus(epic);
                     updateTask(epic);
                 } else if (removedTask instanceof EpicTask removedEpicTask) {
                     for (SubTask subTask : removedEpicTask.getSubTasks().values()) {
@@ -130,6 +130,18 @@ public class DefaultTaskManager implements TaskManager {
         taskContainer.getOrdinaryTaskMap().clear();
         taskContainer.getEpicTaskMap().clear();
         taskContainer.getSubTaskMap().clear();
+    }
+
+    /**
+     * Adding the arbitrary number of tasks to the manager.
+     *
+     * @param tasks to be added to the manager.
+     */
+    @Override
+    public void addTask(Task... tasks) {
+        for (Task t : tasks) {
+            addTask(t);
+        }
     }
 
     /**
@@ -155,9 +167,7 @@ public class DefaultTaskManager implements TaskManager {
         EpicTask epic = task.getParentEpicTask();
         taskContainer.getSubTaskMap().put(task.getId(), task);
         epic.getSubTasks().put(task.getId(), task);
-        if (epic.getSubTasks().size() > 1) {
-            updateTask(task);
-        }
+        updateTask(task);
 
     }
 
@@ -192,11 +202,11 @@ public class DefaultTaskManager implements TaskManager {
         taskContainer.getSubTaskMap().put(task.getId(), task);
         if (oldEpic.getId() != newEpic.getId()) {
             oldEpic.getSubTasks().remove(task.getId());
-            oldEpic = EpicStatusUpdater.updateStatus(oldEpic);
+            oldEpic = EpicUpdater.fullUpdate(oldEpic);
             updateTask(oldEpic);
         }
         newEpic.getSubTasks().put(task.getId(), task);
-        newEpic = EpicStatusUpdater.updateStatus(newEpic);
+        newEpic = EpicUpdater.fullUpdate(newEpic);
         updateTask(newEpic);
     }
 
@@ -208,5 +218,16 @@ public class DefaultTaskManager implements TaskManager {
     @Override
     public List<Task> history() {
         return historyManager.getHistory();
+    }
+
+    /**
+     * Returns history of the viewed tasks in the natural order for {@link Task#startTime} field.
+     * Task is considered reviewed when it has been got through {@link TaskManager#getTask(int)} method.
+     *
+     * @return {@link List} of viewed tasks in the natural order.
+     */
+    @Override
+    public List<Task> priorityHistory() {
+        return historyManager.getPriorityHistory();
     }
 }

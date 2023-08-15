@@ -22,11 +22,11 @@ public final class EpicTask extends Task {
         this.subTasks = new HashMap<>();
     }
 
-    public EpicTask(String title, String description, LocalDateTime startTime, Duration duration) {
-        super(title, description, startTime, duration);
-        this.type = TaskType.EPIC;
-        this.subTasks = new HashMap<>();
-    }
+//    public EpicTask(String title, String description, LocalDateTime startTime, Duration duration) {
+//        super(title, description, startTime, duration);
+//        this.type = TaskType.EPIC;
+//        this.subTasks = new HashMap<>();
+//    }
 
     private EpicTask(Updater updater) {
         super(updater);
@@ -34,8 +34,9 @@ public final class EpicTask extends Task {
         this.subTasks = updater.subTasks;
     }
 
-    private EpicTask(int id, String title, String description, TaskStatus taskStatus) {
-        super(id, title, description, taskStatus);
+    private EpicTask(int id, String title, String description, TaskStatus taskStatus,
+                     LocalDateTime startTime, Duration duration) {
+        super(id, title, description, taskStatus, startTime, duration);
         this.type = TaskType.EPIC;
         this.subTasks = new HashMap<>();
     }
@@ -44,21 +45,21 @@ public final class EpicTask extends Task {
         return subTasks;
     }
 
-    @Override
-    public String toString() {
-        return String.join(",",
-                String.valueOf(getId()), type.name(), getTitle(), getTaskStatus().name(), getDescription());
-    }
-
     public static EpicTask fromString(List<String> dataList) {
         int id = Integer.parseInt(dataList.get(0));
         String title = dataList.get(2);
         TaskStatus status = TaskStatus.valueOf(dataList.get(3));
         String description = dataList.get(4);
-        return new EpicTask(id, title, description, status);
+        LocalDateTime startTime = "null".equals(dataList.get(5)) ? null : LocalDateTime.parse(dataList.get(5));
+        Duration duration = "null".equals(dataList.get(6)) ? null : Duration.parse(dataList.get(6));
+        return new EpicTask(id, title, description, status, startTime, duration);
     }
 
-    //TODO убрать сеттеры, которые должны подтягиваться из сабтасков.
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
     public static final class Updater extends Task.Updater {
         private final HashMap<Integer, SubTask> subTasks;
 

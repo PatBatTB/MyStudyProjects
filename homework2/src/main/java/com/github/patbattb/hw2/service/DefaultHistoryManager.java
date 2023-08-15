@@ -2,15 +2,14 @@ package com.github.patbattb.hw2.service;
 
 import com.github.patbattb.hw2.domain.task.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public final class DefaultHistoryManager implements HistoryManager {
 
     private static final int MAXIMUM_SIZE = 10;
     private final Map<Integer, Node<Task>> historyMap;
+    private final TreeSet<Task> priorityHistorySet;
     private int size;
     private Node<Task> head;
     private Node<Task> tail;
@@ -19,6 +18,8 @@ public final class DefaultHistoryManager implements HistoryManager {
 
     public DefaultHistoryManager() {
         historyMap = new HashMap<>();
+        priorityHistorySet = new TreeSet<>(
+                Comparator.comparing(Task::getStartTime, Comparator.nullsLast(LocalDateTime::compareTo)));
         head = null;
         tail = null;
         size = 0;
@@ -31,6 +32,7 @@ public final class DefaultHistoryManager implements HistoryManager {
             remove(task.getId());
         }
         historyMap.put(task.getId(), newNode);
+        priorityHistorySet.add(task);
         if (size == 0) {
             tail = newNode;
         } else {
@@ -49,6 +51,11 @@ public final class DefaultHistoryManager implements HistoryManager {
             aList.add(node.value);
         }
         return aList;
+    }
+
+    @Override
+    public List<Task> getPriorityHistory() {
+        return new ArrayList<>(priorityHistorySet);
     }
 
     @Override
@@ -73,6 +80,7 @@ public final class DefaultHistoryManager implements HistoryManager {
 
 
         historyMap.remove(id);
+        priorityHistorySet.remove(node.value);
         size--;
     }
 

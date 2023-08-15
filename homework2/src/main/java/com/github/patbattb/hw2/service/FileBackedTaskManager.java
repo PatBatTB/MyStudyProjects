@@ -135,7 +135,7 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
                 case "TASK" -> ordinaryList.add(Task.fromString(dataList));
                 case "EPIC" -> epicList.add(EpicTask.fromString(dataList));
                 case "SUBTASK" -> {
-                    int epicIndex = Integer.parseInt(dataList.get(5));
+                    int epicIndex = Integer.parseInt(dataList.get(7));
                     EpicTask epic = null;
                     for (Task localEpic : epicList) {
                         if (epicIndex == localEpic.getId()) {

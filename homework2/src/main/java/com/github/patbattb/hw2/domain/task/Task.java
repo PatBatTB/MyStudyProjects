@@ -7,6 +7,7 @@ import com.github.patbattb.hw2.service.IdProvider;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A base class for task.
@@ -52,18 +53,19 @@ public sealed class Task permits EpicTask, SubTask {
         this.taskStatus = updater.taskStatus;
         this.startTime = updater.startTime;
         this.duration = updater.duration;
-        this.endTime = startTime.plus(duration);
+        this.endTime = Objects.isNull(startTime) ? null : startTime.plus(duration);
     }
 
-    protected Task(int id, String title, String description, TaskStatus taskStatus) {
+    protected Task(int id, String title, String description,
+                   TaskStatus taskStatus, LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.type = TaskType.TASK;
         this.title = title;
         this.description = description;
         this.taskStatus = taskStatus;
-        this.startTime = null;
-        this.duration = null;
-        this.endTime = null;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime = Objects.isNull(startTime) ? null : startTime.plus(duration);
     }
 
     /**
@@ -129,6 +131,16 @@ public sealed class Task permits EpicTask, SubTask {
         return endTime;
     }
 
+    public static Task fromString(List<String> dataList) {
+        int id = Integer.parseInt(dataList.get(0));
+        String title = dataList.get(2);
+        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
+        String description = dataList.get(4);
+        LocalDateTime startTime = "null".equals(dataList.get(5)) ? null : LocalDateTime.parse(dataList.get(5));
+        Duration duration = "null".equals(dataList.get(6)) ? null : Duration.parse(dataList.get(6));
+        return new Task(id, title, description, status, startTime, duration);
+    }
+
     /**
      * Overridden method toString.
      *
@@ -136,15 +148,9 @@ public sealed class Task permits EpicTask, SubTask {
      */
     @Override
     public String toString() {
-        return String.join(",", String.valueOf(id), type.name(), title, taskStatus.name(), description);
-    }
-
-    public static Task fromString(List<String> dataList) {
-        int id = Integer.parseInt(dataList.get(0));
-        String title = dataList.get(2);
-        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
-        String description = dataList.get(4);
-        return new Task(id, title, description, status);
+        return String.join(",",
+                String.valueOf(id), type.name(), title, taskStatus.name(),
+                description, String.valueOf(startTime), String.valueOf(duration));
     }
 
     /**

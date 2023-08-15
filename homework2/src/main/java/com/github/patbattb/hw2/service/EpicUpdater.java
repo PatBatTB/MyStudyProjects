@@ -3,12 +3,21 @@ package com.github.patbattb.hw2.service;
 import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
+import com.github.patbattb.hw2.domain.task.Task;
 
-import java.util.HashMap;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
-public final class EpicStatusUpdater {
+public final class EpicUpdater {
 
-    private EpicStatusUpdater() {
+    private EpicUpdater() {
+    }
+
+    public static EpicTask fullUpdate(EpicTask task) {
+        task = updateStatus(task);
+        task = updateTime(task);
+        return task;
     }
 
     public static EpicTask updateStatus(EpicTask task) {
@@ -49,5 +58,29 @@ public final class EpicStatusUpdater {
         } else {
             return new EpicTask.Updater(task).setTaskStatus(TaskStatus.IN_PROGRESS).update();
         }
+    }
+
+    public static EpicTask updateTime(EpicTask task) {
+        List<SubTask> subTaskList = new ArrayList<>(task.getSubTasks().values());
+        Optional<LocalDateTime> startTimeOptional = subTaskList.stream()
+                .filter(t -> Objects.nonNull(t.getStartTime()))
+                .map(Task::getStartTime)
+                .min(Comparator.naturalOrder());
+        LocalDateTime epicStartTime = startTimeOptional.orElse(null);
+        if (epicStartTime == null) return new EpicTask.Updater(task)
+                .setStartTime(null)
+                .setDuration(null)
+                .update();
+
+        Optional<LocalDateTime> endTimeOptional = subTaskList.stream()
+                .filter(t -> Objects.nonNull(t.getEndTime()))
+                .map(Task::getEndTime)
+                .max(Comparator.naturalOrder());
+        LocalDateTime epicEndTime = endTimeOptional.orElse(null);
+        Duration duration = Duration.between(epicStartTime, epicEndTime);
+        return new EpicTask.Updater(task)
+                .setStartTime(epicStartTime)
+                .setDuration(duration)
+                .update();
     }
 }
