@@ -14,30 +14,20 @@ import java.util.List;
  */
 public final class EpicTask extends Task {
     private final HashMap<Integer, SubTask> subTasks;
-    private final TaskType type;
 
     public EpicTask(String title, String description) {
-        super(title, description);
-        this.type = TaskType.EPIC;
+        super(title, description, TaskType.EPIC);
         this.subTasks = new HashMap<>();
     }
 
-//    public EpicTask(String title, String description, LocalDateTime startTime, Duration duration) {
-//        super(title, description, startTime, duration);
-//        this.type = TaskType.EPIC;
-//        this.subTasks = new HashMap<>();
-//    }
-
     private EpicTask(Updater updater) {
         super(updater);
-        this.type = updater.type;
         this.subTasks = updater.subTasks;
     }
 
     private EpicTask(int id, String title, String description, TaskStatus taskStatus,
                      LocalDateTime startTime, Duration duration) {
-        super(id, title, description, taskStatus, startTime, duration);
-        this.type = TaskType.EPIC;
+        super(id, title, description, TaskType.EPIC, taskStatus, startTime, duration);
         this.subTasks = new HashMap<>();
     }
 
@@ -66,7 +56,7 @@ public final class EpicTask extends Task {
         public Updater(EpicTask task) {
             this.id = task.getId();
             this.title = task.getTitle();
-            this.type = task.type;
+            this.type = task.getType();
             this.description = task.getDescription();
             this.taskStatus = task.getTaskStatus();
             this.subTasks = task.getSubTasks();

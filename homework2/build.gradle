@@ -33,4 +33,5 @@ jar {
 
 test {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }

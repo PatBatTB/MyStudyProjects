@@ -24,42 +24,30 @@ public sealed class Task permits EpicTask, SubTask {
     private final LocalDateTime endTime;
 
     public Task(String title, String description) {
-        this.id = IdProvider.getNewId();
-        this.type = TaskType.TASK;
-        this.title = title;
-        this.description = description;
-        this.taskStatus = TaskStatus.NEW;
-        this.startTime = null;
-        this.duration = null;
-        this.endTime = null;
+        this(IdProvider.getNewId(), title, description, TaskType.TASK, TaskStatus.NEW, null, null);
     }
 
     public Task(String title, String description, LocalDateTime startTime, Duration duration) {
-        this.id = IdProvider.getNewId();
-        this.type = TaskType.TASK;
-        this.title = title;
-        this.description = description;
-        this.taskStatus = TaskStatus.NEW;
-        this.startTime = startTime;
-        this.duration = duration;
-        this.endTime = startTime.plus(duration);
+        this(IdProvider.getNewId(), title, description, TaskType.TASK, TaskStatus.NEW, startTime, duration);
     }
 
     protected Task(Updater updater) {
-        this.id = updater.id;
-        this.type = updater.type;
-        this.title = updater.title;
-        this.description = updater.description;
-        this.taskStatus = updater.taskStatus;
-        this.startTime = updater.startTime;
-        this.duration = updater.duration;
-        this.endTime = Objects.isNull(startTime) ? null : startTime.plus(duration);
+        this(updater.id, updater.title, updater.description, updater.type,
+                updater.taskStatus, updater.startTime, updater.duration);
     }
 
-    protected Task(int id, String title, String description,
+    protected Task(String title, String description, TaskType type) {
+        this(IdProvider.getNewId(), title, description, type, TaskStatus.NEW, null, null);
+    }
+
+    protected Task(String title, String description, TaskType type, LocalDateTime startTime, Duration duration) {
+        this(IdProvider.getNewId(), title, description, type, TaskStatus.NEW, startTime, duration);
+    }
+
+    protected Task(int id, String title, String description, TaskType type,
                    TaskStatus taskStatus, LocalDateTime startTime, Duration duration) {
         this.id = id;
-        this.type = TaskType.TASK;
+        this.type = type;
         this.title = title;
         this.description = description;
         this.taskStatus = taskStatus;
@@ -93,6 +81,17 @@ public sealed class Task permits EpicTask, SubTask {
      */
     public String getDescription() {
         return description;
+    }
+
+    public static Task fromString(List<String> dataList) {
+        int id = Integer.parseInt(dataList.get(0));
+        TaskType type = TaskType.valueOf(dataList.get(1));
+        String title = dataList.get(2);
+        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
+        String description = dataList.get(4);
+        LocalDateTime startTime = "null".equals(dataList.get(5)) ? null : LocalDateTime.parse(dataList.get(5));
+        Duration duration = "null".equals(dataList.get(6)) ? null : Duration.parse(dataList.get(6));
+        return new Task(id, title, description, type, status, startTime, duration);
     }
 
     /**
@@ -131,14 +130,13 @@ public sealed class Task permits EpicTask, SubTask {
         return endTime;
     }
 
-    public static Task fromString(List<String> dataList) {
-        int id = Integer.parseInt(dataList.get(0));
-        String title = dataList.get(2);
-        TaskStatus status = TaskStatus.valueOf(dataList.get(3));
-        String description = dataList.get(4);
-        LocalDateTime startTime = "null".equals(dataList.get(5)) ? null : LocalDateTime.parse(dataList.get(5));
-        Duration duration = "null".equals(dataList.get(6)) ? null : Duration.parse(dataList.get(6));
-        return new Task(id, title, description, status, startTime, duration);
+    /**
+     * Getter.
+     *
+     * @return type of the task.
+     */
+    public TaskType getType() {
+        return type;
     }
 
     /**

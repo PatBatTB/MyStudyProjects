@@ -12,32 +12,27 @@ import java.util.List;
  * A part of {@link EpicTask}.
  */
 public final class SubTask extends Task {
-    private final TaskType type;
     private final EpicTask parentEpicTask;
 
     public SubTask(String title, String description, EpicTask parentEpicTask) {
-        super(title, description);
-        this.type = TaskType.SUBTASK;
+        super(title, description, TaskType.SUBTASK);
         this.parentEpicTask = parentEpicTask;
     }
 
     public SubTask(String title, String description,
                    LocalDateTime startTime, Duration duration, EpicTask parentEpicTask) {
-        super(title, description, startTime, duration);
-        this.type = TaskType.SUBTASK;
+        super(title, description, TaskType.SUBTASK, startTime, duration);
         this.parentEpicTask = parentEpicTask;
     }
 
     private SubTask(Updater updater) {
         super(updater);
-        this.type = updater.type;
         this.parentEpicTask = updater.parentEpicTask;
     }
 
     private SubTask(int id, String title, String description, TaskStatus taskStatus,
                     LocalDateTime startTime, Duration duration, EpicTask parentEpicTask) {
-        super(id, title, description, taskStatus, startTime, duration);
-        this.type = TaskType.SUBTASK;
+        super(id, title, description, TaskType.SUBTASK, taskStatus, startTime, duration);
         this.parentEpicTask = parentEpicTask;
     }
 
@@ -66,7 +61,7 @@ public final class SubTask extends Task {
         public Updater(SubTask subTask) {
             this.id = subTask.getId();
             this.title = subTask.getTitle();
-            this.type = subTask.type;
+            this.type = subTask.getType();
             this.description = subTask.getDescription();
             this.taskStatus = subTask.getTaskStatus();
             this.parentEpicTask = subTask.getParentEpicTask();
