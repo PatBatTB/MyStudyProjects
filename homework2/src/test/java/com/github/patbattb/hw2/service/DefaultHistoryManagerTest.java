@@ -1,5 +1,6 @@
 package com.github.patbattb.hw2.service;
 
+import com.github.patbattb.hw2.service.manager.DefaultHistoryManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

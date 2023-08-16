@@ -1,4 +1,4 @@
-package com.github.patbattb.hw2.service;
+package com.github.patbattb.hw2.service.task;
 
 import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.task.EpicTask;

@@ -3,6 +3,7 @@ package com.github.patbattb.hw2.service;
 import com.github.patbattb.hw2.domain.TaskStatus;
 import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
+import com.github.patbattb.hw2.service.task.EpicUpdater;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

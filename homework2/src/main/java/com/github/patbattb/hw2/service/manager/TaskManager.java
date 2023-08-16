@@ -1,4 +1,4 @@
-package com.github.patbattb.hw2.service;
+package com.github.patbattb.hw2.service.manager;
 
 import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
@@ -50,7 +50,7 @@ public interface TaskManager {
     List<Task> history();
 
     /**
-     * Get history of lst viewed tasks in the natural order of {@link Task#startTime}
+     * Get list of tasks in the natural order of {@link Task#startTime}
      */
     List<Task> priorityHistory();
 }

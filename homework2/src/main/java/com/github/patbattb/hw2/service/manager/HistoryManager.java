@@ -1,4 +1,4 @@
-package com.github.patbattb.hw2.service;
+package com.github.patbattb.hw2.service.manager;
 
 import com.github.patbattb.hw2.domain.task.Task;
 
@@ -27,11 +27,4 @@ public interface HistoryManager {
      * @return {@link List<Task>} of last viewed tasks.
      */
     List<Task> getHistory();
-
-    /**
-     * Returns {@link List} of the last viewed tasks in the natural order of {@link Task#startTime} field.
-     *
-     * @return {@link List<Task>} of last viewed tasks.
-     */
-    List<Task> getPriorityHistory();
 }

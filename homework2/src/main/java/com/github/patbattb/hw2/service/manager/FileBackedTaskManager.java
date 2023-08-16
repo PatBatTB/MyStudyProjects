@@ -1,9 +1,10 @@
-package com.github.patbattb.hw2.service;
+package com.github.patbattb.hw2.service.manager;
 
 import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
 import com.github.patbattb.hw2.domain.task.Task;
 import com.github.patbattb.hw2.exception.ManagerSaveException;
+import com.github.patbattb.hw2.service.IdProvider;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -1,13 +1,13 @@
-package com.github.patbattb.hw2.service;
+package com.github.patbattb.hw2.service.manager;
 
 import com.github.patbattb.hw2.domain.TaskContainer;
 import com.github.patbattb.hw2.domain.task.EpicTask;
 import com.github.patbattb.hw2.domain.task.SubTask;
 import com.github.patbattb.hw2.domain.task.Task;
+import com.github.patbattb.hw2.service.task.EpicUpdater;
+import com.github.patbattb.hw2.service.task.TaskTimeVerificator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Default implementation of {@link TaskManager} interface
@@ -16,10 +16,16 @@ public class DefaultTaskManager implements TaskManager {
 
     private final TaskContainer taskContainer;
     private final HistoryManager historyManager;
+    private final TreeSet<Task> prioritizedTaskSet;
 
     public DefaultTaskManager() {
         taskContainer = new TaskContainer();
         historyManager = Managers.getDefaultHistory();
+        prioritizedTaskSet = new TreeSet<>(((Comparator<Task>) (a, b) -> {
+            if (Objects.isNull(a.getStartTime())) return 1;
+            if (Objects.isNull(b.getStartTime())) return -1;
+            return a.getStartTime().compareTo(b.getStartTime());
+        }).thenComparingInt(Task::getId));
     }
 
     /**
@@ -150,12 +156,14 @@ public class DefaultTaskManager implements TaskManager {
      */
     @Override
     public void addTask(Task task) {
+        TaskTimeVerificator.findTimeOverlaps(this, task);
         if (task instanceof EpicTask epic) {
             addTask(epic);
         } else if (task instanceof SubTask subTask) {
             addTask(subTask);
         } else {
             taskContainer.getOrdinaryTaskMap().put(task.getId(), task);
+            addTaskToPrioritizedTaskSet(task);
         }
     }
 
@@ -166,6 +174,7 @@ public class DefaultTaskManager implements TaskManager {
     private void addTask(SubTask task) {
         EpicTask epic = task.getParentEpicTask();
         taskContainer.getSubTaskMap().put(task.getId(), task);
+        addTaskToPrioritizedTaskSet(task);
         epic.getSubTasks().put(task.getId(), task);
         updateTask(task);
 
@@ -177,12 +186,14 @@ public class DefaultTaskManager implements TaskManager {
      */
     @Override
     public void updateTask(Task task) {
+        TaskTimeVerificator.findTimeOverlaps(this, task);
         if (task instanceof EpicTask epic) {
             updateTask(epic);
         } else if (task instanceof SubTask sub) {
             updateTask(sub);
         } else {
             taskContainer.getOrdinaryTaskMap().put(task.getId(), task);
+            addTaskToPrioritizedTaskSet(task);
         }
     }
 
@@ -192,6 +203,7 @@ public class DefaultTaskManager implements TaskManager {
             subTask = new SubTask.Updater(subTask).setParentEpicTask(task).update();
             task.getSubTasks().put(subTask.getId(), subTask);
             taskContainer.getSubTaskMap().put(subTask.getId(), subTask);
+            addTaskToPrioritizedTaskSet(subTask);
         }
     }
 
@@ -200,6 +212,7 @@ public class DefaultTaskManager implements TaskManager {
         EpicTask oldEpic = oldTask.getParentEpicTask();
         EpicTask newEpic = task.getParentEpicTask();
         taskContainer.getSubTaskMap().put(task.getId(), task);
+        addTaskToPrioritizedTaskSet(task);
         if (oldEpic.getId() != newEpic.getId()) {
             oldEpic.getSubTasks().remove(task.getId());
             oldEpic = EpicUpdater.fullUpdate(oldEpic);
@@ -221,13 +234,17 @@ public class DefaultTaskManager implements TaskManager {
     }
 
     /**
-     * Returns history of the viewed tasks in the natural order for {@link Task#startTime} field.
-     * Task is considered reviewed when it has been got through {@link TaskManager#getTask(int)} method.
+     * Returns list of the tasks in the natural order for {@link Task#startTime} field.
      *
-     * @return {@link List} of viewed tasks in the natural order.
+     * @return {@link List} of {@link Task} in the natural order.
      */
     @Override
     public List<Task> priorityHistory() {
-        return historyManager.getPriorityHistory();
+        return List.copyOf(prioritizedTaskSet);
+    }
+
+    private void addTaskToPrioritizedTaskSet(Task task) {
+        prioritizedTaskSet.removeIf(t -> task.getId() == t.getId());
+        prioritizedTaskSet.add(task);
     }
 }
