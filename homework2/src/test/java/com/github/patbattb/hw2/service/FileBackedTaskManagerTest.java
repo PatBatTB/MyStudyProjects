@@ -56,7 +56,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @DisplayName("Check save the manager with the epic without subtasks to file.")
     void shouldCreateCorrectBackupFileWithHistoryAndEmptyEpicTask() {
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
-        String assertString = "3,EPIC,et1,NEW,ed1\n\n3";
+        String assertString = "3,EPIC,et1,NEW,ed1,null,null\n\n3";
         fileBackedTaskManager.addTask(emptyEpic);
         fileBackedTaskManager.getTask(emptyEpic.getId());
         assertThatPath(pathToTestBackupFile).content(StandardCharsets.UTF_8).isEqualTo(assertString);
@@ -66,7 +66,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @DisplayName("Check save the manager with tasks and without history")
     void shouldCreateCorrectBackupFileWithoutHistory() {
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
-        String assertString = "3,EPIC,et1,NEW,ed1\n\n";
+        String assertString = "3,EPIC,et1,NEW,ed1,null,null\n\n";
         fileBackedTaskManager.addTask(emptyEpic);
         assertThatPath(pathToTestBackupFile).content(StandardCharsets.UTF_8).isEqualTo(assertString);
     }
@@ -81,8 +81,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     @DisplayName("Check load from the file with the task and the history.")
     void shouldCreateManagerWithTaskAndHistoryFromBackupFile() throws IOException {
-        String backupString = "3,EPIC,et1,NEW,ed1\n\n3";
-        String assertString = "3,EPIC,et1,NEW,ed1";
+        String backupString = "3,EPIC,et1,NEW,ed1,null,null\n\n3";
+        String assertString = "3,EPIC,et1,NEW,ed1,null,null";
         Files.createDirectories(pathToTestBackupFile.getParent());
         Files.createFile(pathToTestBackupFile);
         Files.writeString(pathToTestBackupFile, backupString, StandardCharsets.UTF_8);
@@ -95,8 +95,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     @DisplayName("Check load from file with task and without history")
     void shouldCreateManagerWithTaskAndWithoutHistoryFromBackupFile() throws IOException {
-        String backupString = "3,EPIC,et1,NEW,ed1\n\n";
-        String assertString = "3,EPIC,et1,NEW,ed1";
+        String backupString = "3,EPIC,et1,NEW,ed1,null,null\n\n";
+        String assertString = "3,EPIC,et1,NEW,ed1,null,null";
         Files.createDirectories(pathToTestBackupFile.getParent());
         Files.createFile(pathToTestBackupFile);
         Files.writeString(pathToTestBackupFile, backupString, StandardCharsets.UTF_8);

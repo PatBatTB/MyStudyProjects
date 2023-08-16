@@ -6,6 +6,7 @@ import com.github.patbattb.hw2.domain.TaskType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An inheritor of {@link Task}.
@@ -53,6 +54,24 @@ public final class SubTask extends Task {
     @Override
     public String toString() {
         return String.join(",", super.toString(), String.valueOf(parentEpicTask.getId()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SubTask subTask = (SubTask) o;
+
+        return Objects.equals(parentEpicTask, subTask.parentEpicTask);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (parentEpicTask != null ? parentEpicTask.hashCode() : 0);
+        return result;
     }
 
     public static final class Updater extends Task.Updater {

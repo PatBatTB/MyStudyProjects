@@ -152,6 +152,47 @@ public sealed class Task permits EpicTask, SubTask {
     }
 
     /**
+     * Overridden equals method.
+     *
+     * @param o object for equaling.
+     * @return True if the objects are equals.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Task task = (Task) o;
+
+        if (id != task.id) return false;
+        if (type != task.type) return false;
+        if (!Objects.equals(title, task.title)) return false;
+        if (!Objects.equals(description, task.description)) return false;
+        if (taskStatus != task.taskStatus) return false;
+        if (!Objects.equals(startTime, task.startTime)) return false;
+        if (!Objects.equals(duration, task.duration)) return false;
+        return Objects.equals(endTime, task.endTime);
+    }
+
+    /**
+     * Hashcode based on field values.
+     *
+     * @return Digital hashcode.
+     */
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (taskStatus != null ? taskStatus.hashCode() : 0);
+        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
+        return result;
+    }
+
+    /**
      * Variation of the builder pattern.
      * The constructor accepts the {@link Task}. Setters set new values.
      * At the end, the {@link Updater#update} method returns a new instance of the {@link Task}

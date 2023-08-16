@@ -154,7 +154,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addTask(task);
         Task updatedTask = new Task.Updater(task).update();
         taskManager.updateTask(updatedTask);
-        assertThat(taskManager.getListOfOrdinaryTasks()).doesNotContain(task);
         assertThat(taskManager.getListOfOrdinaryTasks()).contains(updatedTask);
 
     }
