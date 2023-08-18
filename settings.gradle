@@ -7,4 +7,7 @@ include 'homework4'
 include 'homework5'
 include 'homework6'
 include 'taskmanager-backend'
+include 'homework7'
+include 'kvserver'
+include 'kvserver'
 
