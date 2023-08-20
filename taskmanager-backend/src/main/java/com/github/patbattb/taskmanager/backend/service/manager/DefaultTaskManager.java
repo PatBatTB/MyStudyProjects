@@ -246,7 +246,7 @@ public class DefaultTaskManager implements TaskManager {
      * @return {@link List} of {@link Task} in the natural order.
      */
     @Override
-    public List<Task> priorityHistory() {
+    public List<Task> getPrioritizedTasks() {
         return List.copyOf(prioritizedTaskSet);
     }
 

@@ -52,5 +52,5 @@ public interface TaskManager {
     /**
      * Get list of tasks in the natural order of {@link Task#startTime}
      */
-    List<Task> priorityHistory();
+    List<Task> getPrioritizedTasks();
 }

@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClass = 'com.github.patbattb.hw7.Main'
+    mainClass = 'com.github.patbattb.hw7.Application'
 }
 
 group = 'com.github.patbattb'
@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation project(':taskmanager-backend')
-    implementation project(':kvserver')
+    implementation 'com.google.code.gson:gson:2.10.1'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core:3.24.2'
@@ -34,4 +34,9 @@ jar {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('run_w_server') {
+    group 'application'
+    dependsOn ':kvserver:run', 'run'
 }

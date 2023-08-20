@@ -12,11 +12,11 @@ public final class TaskTimeVerificator {
 
     public static boolean findTimeOverlaps(TaskManager manager, Task task) {
         var taskStart = task.getStartTime();
-        if (Objects.isNull(taskStart) || manager.priorityHistory().isEmpty()) return false;
+        if (Objects.isNull(taskStart) || manager.getPrioritizedTasks().isEmpty()) return false;
         var taskEnd = task.getEndTime();
         var isOverlap = false;
 
-        for (Task taskFromManager : manager.priorityHistory()) {
+        for (Task taskFromManager : manager.getPrioritizedTasks()) {
             if (task.getId() == taskFromManager.getId()) continue;
             var manStart = taskFromManager.getStartTime();
             var manEnd = taskFromManager.getEndTime();

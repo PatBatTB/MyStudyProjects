@@ -27,15 +27,42 @@ public class KVServer {
 		server.createContext("/load", this::load);
 	}
 
-	private void load(HttpExchange h) {
-		// TODO Добавьте получение значения по ключу
+	private void load(HttpExchange h) throws IOException {
+		try (h) {
+			System.out.println("\n/load");
+			if (!hasAuth(h)) {
+				System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+				h.sendResponseHeaders(403, 0);
+				return;
+			}
+			if ("GET".equals(h.getRequestMethod())) {
+				String key = h.getRequestURI().getPath().substring("/load/".length());
+				if (!key.isBlank()) {
+					if (data.containsKey(key)) {
+						String answer = data.get(key);
+						System.out.println("Key " + key + " успешно найден.");
+						h.sendResponseHeaders(200, 0);
+						writeText(h, answer);
+					} else {
+						System.out.println("Key не найден. Key указывается в пути: /load/{key}");
+						h.sendResponseHeaders(404, 0);
+					}
+				} else {
+					System.out.println("Key для загрузки пустой. key указывается в пути: /load/{key}");
+					h.sendResponseHeaders(400, 0);
+				}
+			} else {
+				System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
+				h.sendResponseHeaders(405, 0);
+			}
+		}
 	}
 
 	private void save(HttpExchange h) throws IOException {
 		try (h) {
 			System.out.println("\n/save");
 			if (!hasAuth(h)) {
-				System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+				System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
 				h.sendResponseHeaders(403, 0);
 				return;
 			}
@@ -92,6 +119,10 @@ public class KVServer {
 
 	protected String readText(HttpExchange h) throws IOException {
 		return new String(h.getRequestBody().readAllBytes(), UTF_8);
+	}
+
+	protected void writeText(HttpExchange h, String text) throws IOException {
+		h.getResponseBody().write(text.getBytes(UTF_8));
 	}
 
 	protected void sendText(HttpExchange h, String text) throws IOException {

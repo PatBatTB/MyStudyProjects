@@ -1,6 +1,7 @@
 package com.github.patbattb.hw2.service;
 
 import com.github.patbattb.taskmanager.backend.service.manager.FileBackedTaskManager;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,6 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static org.assertj.core.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
@@ -49,7 +48,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void shouldDoesntCreateFileIfManagerNotHaveTasks() {
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
         save(fileBackedTaskManager);
-        assertThatPath(pathToTestBackupFile).doesNotExist();
+        Assertions.assertThatPath(pathToTestBackupFile).doesNotExist();
     }
 
     @Test
@@ -59,7 +58,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         String assertString = "3,EPIC,et1,NEW,ed1,null,null\n\n3";
         fileBackedTaskManager.addTask(emptyEpic);
         fileBackedTaskManager.getTask(emptyEpic.getId());
-        assertThatPath(pathToTestBackupFile).content(StandardCharsets.UTF_8).isEqualTo(assertString);
+        Assertions.assertThatPath(pathToTestBackupFile).content(StandardCharsets.UTF_8).isEqualTo(assertString);
     }
 
     @Test
@@ -68,14 +67,14 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
         String assertString = "3,EPIC,et1,NEW,ed1,null,null\n\n";
         fileBackedTaskManager.addTask(emptyEpic);
-        assertThatPath(pathToTestBackupFile).content(StandardCharsets.UTF_8).isEqualTo(assertString);
+        Assertions.assertThatPath(pathToTestBackupFile).content(StandardCharsets.UTF_8).isEqualTo(assertString);
     }
 
     @Test
     @DisplayName("Check load with the missing file.")
     void shouldCreateManagerWithoutTasksIfBackupFileDoesntExist() {
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
-        assertThatList(fileBackedTaskManager.getListOfAllTasks()).isEmpty();
+        Assertions.assertThatList(fileBackedTaskManager.getListOfAllTasks()).isEmpty();
     }
 
     @Test
@@ -87,8 +86,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         Files.createFile(pathToTestBackupFile);
         Files.writeString(pathToTestBackupFile, backupString, StandardCharsets.UTF_8);
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
-        assertThat(fileBackedTaskManager.getTaskContainer().getEpicTaskMap().get(3).toString()).isEqualTo(assertString);
-        assertThat(fileBackedTaskManager.history().get(0).toString()).isEqualTo(assertString);
+        Assertions.assertThat(fileBackedTaskManager.getTaskContainer()
+                .getEpicTaskMap().get(3).toString()).isEqualTo(assertString);
+        Assertions.assertThat(fileBackedTaskManager.history().get(0).toString()).isEqualTo(assertString);
 
     }
 
@@ -101,8 +101,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         Files.createFile(pathToTestBackupFile);
         Files.writeString(pathToTestBackupFile, backupString, StandardCharsets.UTF_8);
         var fileBackedTaskManager = new FileBackedTaskManager(pathToTestBackupFile);
-        assertThat(fileBackedTaskManager.getTaskContainer().getEpicTaskMap().get(3).toString()).isEqualTo(assertString);
-        assertThatList(fileBackedTaskManager.history()).isEmpty();
+        Assertions.assertThat(fileBackedTaskManager.getTaskContainer()
+                .getEpicTaskMap().get(3).toString()).isEqualTo(assertString);
+        Assertions.assertThatList(fileBackedTaskManager.history()).isEmpty();
     }
 
 }

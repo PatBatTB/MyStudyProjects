@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'com.example'
@@ -7,6 +8,10 @@ version = 'unspecified'
 
 repositories {
     mavenCentral()
+}
+
+application {
+    mainClass = 'com.example.kvserver.Application'
 }
 
 dependencies {
