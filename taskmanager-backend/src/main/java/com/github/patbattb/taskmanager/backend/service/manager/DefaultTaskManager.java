@@ -80,7 +80,10 @@ public class DefaultTaskManager implements TaskManager {
      */
     @Override
     public List<SubTask> getListOfSubTasks(EpicTask epic) {
-        return new ArrayList<>(epic.getSubTasks().values());
+        return taskContainer.getSubTaskMap().entrySet().stream()
+                .filter(k -> epic.getSubtaskIdList().contains(k.getKey()))
+                .map(Map.Entry::getValue)
+                .toList();
     }
 
     /**
@@ -111,20 +114,19 @@ public class DefaultTaskManager implements TaskManager {
      */
     @Override
     public void removeTask(int id) {
-        ArrayList<HashMap<Integer, ? extends Task>> aList = taskContainer.getListOfAllTaskMaps();
+        var aList = taskContainer.getListOfAllTaskMaps();
         for (HashMap<Integer, ? extends Task> map : aList) {
             if (map.containsKey(id)) {
                 Task removedTask = map.remove(id);
                 historyManager.remove(id);
                 if (removedTask instanceof SubTask removedSubTask) {
-                    EpicTask epic = removedSubTask.getParentEpicTask();
-                    epic.getSubTasks().remove(removedSubTask.getId());
-                    epic = EpicUpdater.updateStatus(epic);
-                    updateTask(epic);
+                    EpicTask epic = getTaskContainer().getEpicTaskMap().get(removedSubTask.getParentEpicTaskId());
+                    epic.getSubtaskIdList().remove(removedSubTask.getId());
+                    EpicUpdater.update(epic, taskContainer.getSubTaskMap()).ifPresent(this::updateTask);
                 } else if (removedTask instanceof EpicTask removedEpicTask) {
-                    for (SubTask subTask : removedEpicTask.getSubTasks().values()) {
-                        taskContainer.getSubTaskMap().remove(subTask.getId());
-                        historyManager.remove(subTask.getId());
+                    for (int subTaskId : removedEpicTask.getSubtaskIdList()) {
+                        taskContainer.getSubTaskMap().remove(subTaskId);
+                        historyManager.remove(subTaskId);
                     }
                 }
                 return;
@@ -177,11 +179,11 @@ public class DefaultTaskManager implements TaskManager {
     }
 
     private void addTask(SubTask task) {
-        EpicTask epic = task.getParentEpicTask();
+        EpicTask epic = taskContainer.getEpicTaskMap().get(task.getParentEpicTaskId());
         taskContainer.getSubTaskMap().put(task.getId(), task);
         addTaskToPrioritizedTaskSet(task);
-        epic.getSubTasks().put(task.getId(), task);
-        updateTask(task);
+        epic.getSubtaskIdList().add(task.getId());
+        EpicUpdater.update(epic, taskContainer.getSubTaskMap()).ifPresent(this::updateTask);
 
     }
 
@@ -205,28 +207,20 @@ public class DefaultTaskManager implements TaskManager {
 
     private void updateTask(EpicTask task) {
         taskContainer.getEpicTaskMap().put(task.getId(), task);
-        for (SubTask subTask : task.getSubTasks().values()) {
-            subTask = new SubTask.Updater(subTask).setParentEpicTask(task).update();
-            task.getSubTasks().put(subTask.getId(), subTask);
-            taskContainer.getSubTaskMap().put(subTask.getId(), subTask);
-            addTaskToPrioritizedTaskSet(subTask);
-        }
     }
 
     private void updateTask(SubTask task) {
         SubTask oldTask = taskContainer.getSubTaskMap().get(task.getId());
-        EpicTask oldEpic = oldTask.getParentEpicTask();
-        EpicTask newEpic = task.getParentEpicTask();
+        EpicTask newEpic = taskContainer.getEpicTaskMap().get(task.getParentEpicTaskId());
+        if (oldTask.getParentEpicTaskId() != task.getParentEpicTaskId()) {
+            EpicTask oldEpic = taskContainer.getEpicTaskMap().get(oldTask.getParentEpicTaskId());
+            oldEpic.getSubtaskIdList().remove(task.getId());
+            newEpic.getSubtaskIdList().add(task.getId());
+            EpicUpdater.update(oldEpic, taskContainer.getSubTaskMap()).ifPresent(this::updateTask);
+        }
         taskContainer.getSubTaskMap().put(task.getId(), task);
         addTaskToPrioritizedTaskSet(task);
-        if (oldEpic.getId() != newEpic.getId()) {
-            oldEpic.getSubTasks().remove(task.getId());
-            oldEpic = EpicUpdater.fullUpdate(oldEpic);
-            updateTask(oldEpic);
-        }
-        newEpic.getSubTasks().put(task.getId(), task);
-        newEpic = EpicUpdater.fullUpdate(newEpic);
-        updateTask(newEpic);
+        EpicUpdater.update(newEpic, taskContainer.getSubTaskMap()).ifPresent(this::updateTask);
     }
 
     /**

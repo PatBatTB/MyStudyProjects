@@ -1,5 +1,6 @@
 package com.github.patbattb.hw7;
 
+import com.github.patbattb.hw7.httpclient.KVClient;
 import com.github.patbattb.hw7.httpserver.HttpTaskServer;
 import com.github.patbattb.taskmanager.backend.domain.task.EpicTask;
 import com.github.patbattb.taskmanager.backend.domain.task.SubTask;
@@ -15,11 +16,13 @@ public class Application {
         TaskManager manager = Managers.getDefaultTaskManager();
         Task task = new Task("t", "d");
         EpicTask epic = new EpicTask("et", "ed");
-        SubTask sub = new SubTask("st", "sd", epic);
-        SubTask sub1 = new SubTask("st1", "sd1", epic);
-        manager.addTask(task, epic, sub, sub1);
+        SubTask sub = new SubTask("st", "sd", 2);
+        SubTask sub1 = new SubTask("st1", "sd1", 2);
+        manager.addTask(task, epic, sub);
         manager.getListOfAllTasks().forEach(System.out::println);
         HttpTaskServer httpTaskServer = new HttpTaskServer(manager);
         httpTaskServer.start();
+        KVClient kvClient = new KVClient("http://localhost:8078");
+        kvClient.save(manager);
     }
 }

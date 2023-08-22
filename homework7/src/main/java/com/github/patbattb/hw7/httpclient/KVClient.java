@@ -75,13 +75,12 @@ public final class KVClient {
 
     public void save(TaskManager manager) {
         Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
                 .registerTypeAdapter(LocalDateTime.class, LOCAL_DATE_TIME_TYPE_ADAPTER)
                 .registerTypeAdapter(Duration.class, DURATION_TYPE_ADAPTER)
                 .create();
 
-        String json = gson.toJson(manager);
-        System.out.println(json);
+        System.out.println(gson.toJson(manager));
+
     }
 
     public void load() {

@@ -11,76 +11,71 @@ import java.util.*;
 
 public final class EpicUpdater {
 
+    private static Map<Integer, SubTask> localMap;
+
     private EpicUpdater() {
     }
 
-    public static EpicTask fullUpdate(EpicTask task) {
-        task = updateStatus(task);
-        task = updateTime(task);
-        return task;
+    /**
+     * Updates {@link EpicTask} status and time from contained subtasks.
+     * If status of the all subtasks is NEW - status of the epic changes to NEW.
+     * If status of the all subtasks is DONE - status of the epic changes to DONE.
+     * In all other cases - status of the epic changes to IN_PROGRESS.
+     *
+     * @param epic       An epic that required a status update.
+     * @param subTaskMap Map with subtasks from the TaskManager.
+     * @return Optional contained new EpicTask, or null if the EpicTask didn't change.
+     */
+    public static Optional<EpicTask> update(EpicTask epic, Map<Integer, SubTask> subTaskMap) {
+        localMap = subTaskMap;
+        EpicTask updatedTask = updateStatus(epic);
+        updatedTask = updateTime(updatedTask);
+        if (epic.equals(updatedTask)) return Optional.empty();
+        return Optional.of(updatedTask);
     }
 
-    public static EpicTask updateStatus(EpicTask task) {
-        if (task.getSubTasks().isEmpty()) {
-            if (task.getTaskStatus() == TaskStatus.NEW) {
-                return task;
+    private static EpicTask updateStatus(EpicTask epic) {
+        if (epic.getSubtaskIdList().isEmpty()) {
+            if (epic.getTaskStatus() == TaskStatus.NEW) {
+                return epic;
             } else {
-                return new EpicTask.Updater(task).setTaskStatus(TaskStatus.NEW).update();
+                return new EpicTask.Updater(epic).setTaskStatus(TaskStatus.NEW).update();
             }
         }
-        HashMap<TaskStatus, Integer> countMap = new HashMap<>();
-        countMap.put(TaskStatus.NEW, 0);
-        countMap.put(TaskStatus.IN_PROGRESS, 0);
-        countMap.put(TaskStatus.DONE, 0);
-        for (SubTask subTask : task.getSubTasks().values()) {
-            TaskStatus taskStatus = subTask.getTaskStatus();
-            countMap.put(taskStatus, countMap.get(taskStatus) + 1);
-        }
-        int countNew = countMap.get(TaskStatus.NEW);
-        int countProgress = countMap.get(TaskStatus.IN_PROGRESS);
-        int countDone = countMap.get(TaskStatus.DONE);
-        if (countDone == 0 && countProgress == 0) {
-            if (task.getTaskStatus() == TaskStatus.NEW) {
-                return task;
-            } else {
-                return new EpicTask.Updater(task).setTaskStatus(TaskStatus.NEW).update();
-            }
-        }
-        if (countNew == 0 && countProgress == 0) {
-            if (task.getTaskStatus() == TaskStatus.DONE) {
-                return task;
-            } else {
-                return new EpicTask.Updater(task).setTaskStatus(TaskStatus.DONE).update();
-            }
-        }
-        if (task.getTaskStatus() == TaskStatus.IN_PROGRESS) {
-            return task;
+        List<SubTask> subTaskList = localMap.values().stream()
+                .filter(st -> epic.getSubtaskIdList().contains(st.getId()))
+                .toList();
+        TaskStatus newStatus;
+        if (subTaskList.stream().allMatch(st -> st.getTaskStatus() == TaskStatus.NEW)) {
+            newStatus = TaskStatus.NEW;
+        } else if (subTaskList.stream().allMatch(st -> st.getTaskStatus() == TaskStatus.DONE)) {
+            newStatus = TaskStatus.DONE;
         } else {
-            return new EpicTask.Updater(task).setTaskStatus(TaskStatus.IN_PROGRESS).update();
+            newStatus = TaskStatus.IN_PROGRESS;
         }
+        return epic.getTaskStatus() == newStatus ? epic :
+                new EpicTask.Updater(epic).setTaskStatus(newStatus).update();
     }
 
-    public static EpicTask updateTime(EpicTask task) {
-        List<SubTask> subTaskList = new ArrayList<>(task.getSubTasks().values());
-        Optional<LocalDateTime> startTimeOptional = subTaskList.stream()
-                .filter(t -> Objects.nonNull(t.getStartTime()))
+    private static EpicTask updateTime(EpicTask epic) {
+        List<SubTask> subList = new ArrayList<>(localMap.values());
+        LocalDateTime startTime = subList.stream()
                 .map(Task::getStartTime)
-                .min(Comparator.naturalOrder());
-        LocalDateTime epicStartTime = startTimeOptional.orElse(null);
-        if (epicStartTime == null) return new EpicTask.Updater(task)
-                .setStartTime(null)
-                .setDuration(null)
-                .update();
-
-        Optional<LocalDateTime> endTimeOptional = subTaskList.stream()
-                .filter(t -> Objects.nonNull(t.getEndTime()))
+                .filter(Objects::nonNull)
+                .min(Comparator.naturalOrder())
+                .orElse(null);
+        LocalDateTime endTime = subList.stream()
                 .map(Task::getEndTime)
-                .max(Comparator.naturalOrder());
-        LocalDateTime epicEndTime = endTimeOptional.orElse(null);
-        Duration duration = Duration.between(epicStartTime, epicEndTime);
-        return new EpicTask.Updater(task)
-                .setStartTime(epicStartTime)
-                .setDuration(duration)
-                .update();
+                .filter(Objects::nonNull)
+                .max(Comparator.naturalOrder())
+                .orElse(null);
+        if (Objects.equals(startTime, epic.getStartTime()) && Objects.equals(endTime, epic.getEndTime())) {
+            return epic;
+        }
+        if (startTime == null || endTime == null) {
+            return new EpicTask.Updater(epic).setStartTime(null).setDuration(null).update();
+        }
+        Duration duration = Duration.between(startTime, endTime);
+        return new EpicTask.Updater(epic).setStartTime(startTime).setDuration(duration).update();
     }
 }

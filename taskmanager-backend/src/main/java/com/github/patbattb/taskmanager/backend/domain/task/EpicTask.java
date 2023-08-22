@@ -5,7 +5,7 @@ import com.github.patbattb.taskmanager.backend.domain.TaskType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,22 +14,22 @@ import java.util.Objects;
  * A complex task than contains a list of {@link SubTask}.
  */
 public final class EpicTask extends Task {
-    private final HashMap<Integer, SubTask> subTasks;
+    private final List<Integer> subtaskIdList;
 
     public EpicTask(String title, String description) {
         super(title, description, TaskType.EPIC);
-        this.subTasks = new HashMap<>();
+        this.subtaskIdList = new ArrayList<>();
     }
 
     private EpicTask(Updater updater) {
         super(updater);
-        this.subTasks = updater.subTasks;
+        this.subtaskIdList = updater.subtaskIdList;
     }
 
     private EpicTask(int id, String title, String description, TaskStatus taskStatus,
                      LocalDateTime startTime, Duration duration) {
         super(id, title, description, TaskType.EPIC, taskStatus, startTime, duration);
-        this.subTasks = new HashMap<>();
+        this.subtaskIdList = new ArrayList<>();
     }
 
     public static EpicTask fromString(List<String> dataList) {
@@ -42,8 +42,8 @@ public final class EpicTask extends Task {
         return new EpicTask(id, title, description, status, startTime, duration);
     }
 
-    public HashMap<Integer, SubTask> getSubTasks() {
-        return subTasks;
+    public List<Integer> getSubtaskIdList() {
+        return subtaskIdList;
     }
 
     @Override
@@ -59,18 +59,18 @@ public final class EpicTask extends Task {
 
         EpicTask epicTask = (EpicTask) o;
 
-        return Objects.equals(subTasks, epicTask.subTasks);
+        return Objects.equals(subtaskIdList, epicTask.subtaskIdList);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (subTasks != null ? subTasks.hashCode() : 0);
+        result = 31 * result + (subtaskIdList != null ? subtaskIdList.hashCode() : 0);
         return result;
     }
 
     public static final class Updater extends Task.Updater {
-        private final HashMap<Integer, SubTask> subTasks;
+        private final List<Integer> subtaskIdList;
 
         public Updater(EpicTask task) {
             this.id = task.getId();
@@ -78,7 +78,7 @@ public final class EpicTask extends Task {
             this.type = task.getType();
             this.description = task.getDescription();
             this.taskStatus = task.getTaskStatus();
-            this.subTasks = task.getSubTasks();
+            this.subtaskIdList = task.getSubtaskIdList();
             this.startTime = task.getStartTime();
             this.duration = task.getDuration();
         }

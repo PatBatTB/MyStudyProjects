@@ -135,17 +135,8 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
             switch (dataList.get(1)) {
                 case "TASK" -> ordinaryList.add(Task.fromString(dataList));
                 case "EPIC" -> epicList.add(EpicTask.fromString(dataList));
-                case "SUBTASK" -> {
-                    int epicIndex = Integer.parseInt(dataList.get(7));
-                    EpicTask epic = null;
-                    for (Task localEpic : epicList) {
-                        if (epicIndex == localEpic.getId()) {
-                            epic = (EpicTask) localEpic;
-                            break;
-                        }
-                    }
-                    subList.add(SubTask.fromString(dataList, epic));
-                }
+                case "SUBTASK" -> subList.add(SubTask.fromString(dataList));
+                default -> throw new RuntimeException("Invalid task type");
             }
         }
     }
