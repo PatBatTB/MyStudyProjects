@@ -1,6 +1,6 @@
 package com.github.patbattb.hw7.httpserver;
 
-import com.github.patbattb.taskmanager.backend.service.manager.TaskManager;
+import com.github.patbattb.taskmanager.backend.manager.taskmanager.TaskManager;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;

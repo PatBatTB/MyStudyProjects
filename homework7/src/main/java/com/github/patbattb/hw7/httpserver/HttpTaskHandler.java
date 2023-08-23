@@ -1,16 +1,17 @@
 package com.github.patbattb.hw7.httpserver;
 
-import com.github.patbattb.taskmanager.backend.domain.task.Task;
-import com.github.patbattb.taskmanager.backend.service.manager.TaskManager;
+import com.github.patbattb.hw7.serializer.ObjectParser;
+import com.github.patbattb.taskmanager.backend.manager.taskmanager.TaskManager;
+import com.github.patbattb.taskmanager.backend.task.domain.EpicTask;
+import com.github.patbattb.taskmanager.backend.task.domain.SubTask;
+import com.github.patbattb.taskmanager.backend.task.domain.Task;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,10 +20,11 @@ public final class HttpTaskHandler {
     private static final String GET_METHOD = "GET";
     private static final String POST_METHOD = "POST";
     private static final String DELETE_METHOD = "DELETE";
-    private static final String ID = "id";
     private static final int HTTP_OK_STATUS = 200;
     private static final int HTTP_BAD_REQUEST_STATUS = 400;
+    private static final int HTTP_NOT_FOUND_STATUS = 404;
     private static final int HTTP_NOT_ALLOWED_STATUS = 405;
+
     private final TaskManager manager;
 
     HttpTaskHandler(TaskManager manager) {
@@ -32,15 +34,23 @@ public final class HttpTaskHandler {
     public void tasks(HttpExchange exchange) throws IOException {
         switch (exchange.getRequestMethod()) {
             case GET_METHOD -> {
-                //getListOfAllTasks()
-                exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-                bodyString(exchange, "getListOfAllTasks()");
+                List<Task> listOfAllTasks = manager.getListOfAllTasks();
+                if (!listOfAllTasks.isEmpty()) {
+                    exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                    bodyString(exchange, ObjectParser.objectToJson(listOfAllTasks));
+                } else {
+                    exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+                }
 
             }
             case DELETE_METHOD -> {
-                //void removeAllTasks();
-                exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-                bodyString(exchange, "removeAllTasks()");
+                List<Task> listOfAllTasks = manager.getListOfAllTasks();
+                if (!listOfAllTasks.isEmpty()) {
+                    manager.removeAllTasks();
+                    exchange.sendResponseHeaders(HTTP_OK_STATUS, -1);
+                } else {
+                    exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+                }
             }
             default -> methodNotAllowed(exchange);
         }
@@ -49,57 +59,66 @@ public final class HttpTaskHandler {
     public void task(HttpExchange exchange) throws IOException {
         switch (exchange.getRequestMethod()) {
             case GET_METHOD -> {
-                //getTask(int id);
-                //getListOfOrdinaryTasks();
-                getTask(exchange);
+                Optional<Integer> idOptional = parseIdFromQuery(exchange.getRequestURI().getRawQuery());
+                if (idOptional.isPresent()) {
+                    Optional<Task> taskOptional = Optional.ofNullable(manager.getTask(idOptional.get()));
+                    if (taskOptional.isPresent()) {
+                        exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                        bodyString(exchange, ObjectParser.objectToJson(taskOptional.get()));
+                    } else {
+                        exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+                    }
+                } else {
+                    List<Task> listOfTasks = manager.getListOfOrdinaryTasks();
+                    if (!listOfTasks.isEmpty()) {
+                        exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                        bodyString(exchange, ObjectParser.objectToJson(listOfTasks));
+                    } else {
+                        exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+                    }
+                }
             }
             case DELETE_METHOD -> {
-                //removeTask(int id);
-                Map<String, String> queries = parseQuery(exchange.getRequestURI().getRawQuery());
-                if (queries.containsKey(ID)) {
-                    exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-                    bodyString(exchange, String.format("removeTask(%s);", queries.get(ID)));
+                Optional<Integer> idOptional = parseIdFromQuery(exchange.getRequestURI().getRawQuery());
+                if (idOptional.isPresent()) {
+                    Task task = manager.removeTask(idOptional.get());
+                    if (task != null) {
+                        exchange.sendResponseHeaders(HTTP_OK_STATUS, -1);
+                    } else {
+                        exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+                    }
                 } else {
-                    exchange.sendResponseHeaders(HTTP_BAD_REQUEST_STATUS, 0);
+                    exchange.sendResponseHeaders(HTTP_BAD_REQUEST_STATUS, -1);
                 }
             }
             case POST_METHOD -> {
-                //addTask(Task task);
-                //updateTask(Task task);
-                String strId = new String(exchange.getRequestBody().readAllBytes());
-                Task task = strId.isBlank() ? null : manager.getTask(Integer.parseInt(strId));
-                if (manager.getListOfAllTasks().contains(task)) {
-                    exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-                    bodyString(exchange, "updateTask(Task task);");
-                } else {
-                    exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-                    bodyString(exchange, "addTask(Task task);");
+                String requestBody = new String(exchange.getRequestBody().readAllBytes());
+                Optional<Task> taskOptional = ObjectParser.taskFromJson(requestBody);
+                if (taskOptional.isPresent()) {
+                    if (manager.getListOfAllTasks().contains(taskOptional.get())) {
+                        manager.updateTask(taskOptional.get());
+                        exchange.sendResponseHeaders(HTTP_OK_STATUS, -1);
+                    } else {
+                        manager.addTask(taskOptional.get());
+                        exchange.sendResponseHeaders(HTTP_OK_STATUS, -1);
+                    }
                 }
             }
             default -> methodNotAllowed(exchange);
         }
     }
 
-    private void getTask(HttpExchange exchange) throws IOException {
-        Map<String, String> queries = parseQuery(exchange.getRequestURI().getRawQuery());
-        if (queries.containsKey(ID)) {
-            getTask(exchange, queries.get(ID));
-        } else {
-            exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-            bodyString(exchange, "getListOfOrdinaryTasks();");
-        }
-    }
-
-    private void getTask(HttpExchange exchange, String id) throws IOException {
-        exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-        bodyString(exchange, String.format("getTask(%s);", id));
-    }
-
     public void subtasks(HttpExchange exchange) throws IOException {
         if (exchange.getRequestMethod().equals(GET_METHOD)) {
-            //getListOfSubTasks(EpicTask epic);
-            exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-            bodyString(exchange, "getListOfSubTasks(EpicTask epic);");
+            Optional<Task> taskOptional = ObjectParser
+                    .taskFromJson(new String(exchange.getRequestBody().readAllBytes()));
+            if (taskOptional.isPresent() && taskOptional.get() instanceof EpicTask epic) {
+                List<SubTask> listOfSubTasks = manager.getListOfSubTasks(epic);
+                exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                bodyString(exchange, ObjectParser.objectToJson(listOfSubTasks));
+            } else {
+                exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+            }
         } else {
             methodNotAllowed(exchange);
         }
@@ -107,9 +126,13 @@ public final class HttpTaskHandler {
 
     public void epics(HttpExchange exchange) throws IOException {
         if (exchange.getRequestMethod().equals(GET_METHOD)) {
-            //getListOfEpicTasks();
-            exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-            bodyString(exchange, "getListOfEpicTasks();");
+            List<EpicTask> epicTaskList = manager.getListOfEpicTasks();
+            if (!epicTaskList.isEmpty()) {
+                exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                bodyString(exchange, ObjectParser.objectToJson(epicTaskList));
+            } else {
+                exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+            }
         } else {
             methodNotAllowed(exchange);
         }
@@ -117,9 +140,13 @@ public final class HttpTaskHandler {
 
     public void history(HttpExchange exchange) throws IOException {
         if (exchange.getRequestMethod().equals(GET_METHOD)) {
-            //history();
-            exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-            bodyString(exchange, "history();");
+            List<Task> taskList = manager.history();
+            if (!taskList.isEmpty()) {
+                exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                bodyString(exchange, ObjectParser.objectToJson(taskList));
+            } else {
+                exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+            }
         } else {
             methodNotAllowed(exchange);
         }
@@ -127,9 +154,13 @@ public final class HttpTaskHandler {
 
     public void priority(HttpExchange exchange) throws IOException {
         if (exchange.getRequestMethod().equals(GET_METHOD)) {
-            //getPrioritizedTasks();
-            exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-            bodyString(exchange, "getPrioritizedTasks();");
+            List<Task> taskList = manager.getPrioritizedTasks();
+            if (!taskList.isEmpty()) {
+                exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
+                bodyString(exchange, ObjectParser.objectToJson(taskList));
+            } else {
+                exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
+            }
         } else {
             methodNotAllowed(exchange);
         }
@@ -141,23 +172,14 @@ public final class HttpTaskHandler {
         }
     }
 
-    private Map<String, String> parseQuery(String rawQuery) {
-        String regExp = "^.+?(?==)|(?<==).+$";
-        Pattern pattern = Pattern.compile(regExp);
-        List<String> aList = List.of(rawQuery.split("&"));
-        Map<String, String> aMap = new HashMap<>(aList.size());
-        for (String query : aList) {
-            List<String> entry = new ArrayList<>();
-            Matcher matcher = pattern.matcher(query);
-            while (matcher.find()) {
-                entry.add(matcher.group());
-            }
-            switch (entry.size()) {
-                case 1 -> aMap.put(entry.get(0), null);
-                case 2 -> aMap.put(entry.get(0), entry.get(1));
-            }
+    private Optional<Integer> parseIdFromQuery(String rawQuery) {
+        if (rawQuery != null) {
+            String regExp = "(?<=id=)\\d*";
+            Pattern pattern = Pattern.compile(regExp);
+            Matcher matcher = pattern.matcher(rawQuery);
+            if (matcher.find()) return Optional.of(Integer.parseInt(matcher.group()));
         }
-        return aMap;
+        return Optional.empty();
     }
 
     private void methodNotAllowed(HttpExchange exchange) throws IOException {

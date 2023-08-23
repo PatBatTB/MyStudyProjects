@@ -32,8 +32,7 @@ public class KVServer {
 			System.out.println("\n/load");
 			if (!hasAuth(h)) {
 				System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
-				h.sendResponseHeaders(403, 0);
-				return;
+				h.sendResponseHeaders(403, -1);
 			}
 			if ("GET".equals(h.getRequestMethod())) {
 				String key = h.getRequestURI().getPath().substring("/load/".length());
@@ -45,15 +44,15 @@ public class KVServer {
 						writeText(h, answer);
 					} else {
 						System.out.println("Key не найден. Key указывается в пути: /load/{key}");
-						h.sendResponseHeaders(404, 0);
+						h.sendResponseHeaders(404, -1);
 					}
 				} else {
 					System.out.println("Key для загрузки пустой. key указывается в пути: /load/{key}");
-					h.sendResponseHeaders(400, 0);
+					h.sendResponseHeaders(400, -1);
 				}
 			} else {
 				System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
-				h.sendResponseHeaders(405, 0);
+				h.sendResponseHeaders(405, -1);
 			}
 		}
 	}
@@ -63,28 +62,28 @@ public class KVServer {
 			System.out.println("\n/save");
 			if (!hasAuth(h)) {
 				System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
-				h.sendResponseHeaders(403, 0);
+				h.sendResponseHeaders(403, -1);
 				return;
 			}
 			if ("POST".equals(h.getRequestMethod())) {
 				String key = h.getRequestURI().getPath().substring("/save/".length());
 				if (key.isEmpty()) {
 					System.out.println("Key для сохранения пустой. key указывается в пути: /save/{key}");
-					h.sendResponseHeaders(400, 0);
+					h.sendResponseHeaders(400, -1);
 					return;
 				}
 				String value = readText(h);
 				if (value.isEmpty()) {
 					System.out.println("Value для сохранения пустой. value указывается в теле запроса");
-					h.sendResponseHeaders(400, 0);
+					h.sendResponseHeaders(400, -1);
 					return;
 				}
 				data.put(key, value);
 				System.out.println("Значение для ключа " + key + " успешно обновлено!");
-				h.sendResponseHeaders(200, 0);
+				h.sendResponseHeaders(200, -1);
 			} else {
 				System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
-				h.sendResponseHeaders(405, 0);
+				h.sendResponseHeaders(405, -1);
 			}
 		}
 	}
@@ -96,7 +95,7 @@ public class KVServer {
 				sendText(h, apiToken);
 			} else {
 				System.out.println("/register ждёт GET-запрос, а получил " + h.getRequestMethod());
-				h.sendResponseHeaders(405, 0);
+				h.sendResponseHeaders(405, -1);
 			}
 		}
 	}
