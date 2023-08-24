@@ -21,7 +21,7 @@ import java.util.List;
  * to back up the instance to file after each operation.
  * If backup is already exists it will be overwritten, else a new file will be created.
  */
-public final class FileBackedTaskManager extends DefaultTaskManager {
+public class FileBackedTaskManager extends DefaultTaskManager {
     private static final String FILENAME = "DefaultBackupFile.csv";
     private final Path backup;
     private int maxId = 0;
@@ -38,6 +38,14 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
         backup = path;
         load();
         IdProvider.setStartId(maxId);
+    }
+
+    public int getMaxId() {
+        return maxId;
+    }
+
+    public void setMaxId(int maxId) {
+        this.maxId = maxId;
     }
 
     @Override
@@ -77,7 +85,7 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
      * Creates path's directories and the backup file is they don't exist.
      * Does nothing if manager doesn't have tasks.
      */
-    private void save() {
+    protected void save() {
         if (getListOfAllTasks().isEmpty()) return;
         try {
             createFile();
@@ -104,7 +112,7 @@ public final class FileBackedTaskManager extends DefaultTaskManager {
         Files.writeString(backup, Managers.toString(history()), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
     }
 
-    private void load() {
+    protected void load() {
         if (Files.exists(backup)) {
             List<String> lines;
             try {

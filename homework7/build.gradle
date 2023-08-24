@@ -37,7 +37,7 @@ test {
     finalizedBy 'jacocoTestReport'
 }
 
-tasks.register('run_w_server') {
+tasks.register('runWithKVServer') {
     group 'application'
     dependsOn ':kvserver:run', 'run'
 }

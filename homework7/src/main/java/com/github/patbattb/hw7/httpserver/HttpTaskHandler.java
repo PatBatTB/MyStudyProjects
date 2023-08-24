@@ -72,7 +72,7 @@ public final class HttpTaskHandler {
                     List<Task> listOfTasks = manager.getListOfOrdinaryTasks();
                     if (!listOfTasks.isEmpty()) {
                         exchange.sendResponseHeaders(HTTP_OK_STATUS, 0);
-                        bodyString(exchange, ObjectParser.objectToJson(listOfTasks));
+                        bodyString(exchange, ObjectParser.taskListToJson(listOfTasks));
                     } else {
                         exchange.sendResponseHeaders(HTTP_NOT_FOUND_STATUS, -1);
                     }
