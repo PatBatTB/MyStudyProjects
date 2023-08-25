@@ -1,4 +1,4 @@
-package com.github.patbattb.hw7.taskmanager;
+package com.github.patbattb.hw7.manager.taskmanager;
 
 
 import com.github.patbattb.hw7.httpclient.KVClient;

@@ -1,7 +1,7 @@
 package com.github.patbattb.hw7.httpclient;
 
+import com.github.patbattb.hw7.manager.taskmanager.SerializeContainer;
 import com.github.patbattb.hw7.serializer.ObjectParser;
-import com.github.patbattb.hw7.taskmanager.SerializeContainer;
 
 import java.io.IOException;
 import java.net.URI;

@@ -1,4 +1,4 @@
-package com.github.patbattb.hw7.taskmanager;
+package com.github.patbattb.hw7.manager.taskmanager;
 
 import com.github.patbattb.taskmanager.backend.task.domain.Task;
 

@@ -1,7 +1,7 @@
 package com.github.patbattb.hw7.serializer;
 
-import com.github.patbattb.hw7.taskmanager.HttpTaskManager;
-import com.github.patbattb.hw7.taskmanager.SerializeContainer;
+import com.github.patbattb.hw7.manager.taskmanager.HttpTaskManager;
+import com.github.patbattb.hw7.manager.taskmanager.SerializeContainer;
 import com.github.patbattb.taskmanager.backend.task.domain.Task;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

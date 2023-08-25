@@ -21,6 +21,7 @@ import java.util.List;
  * to back up the instance to file after each operation.
  * If backup is already exists it will be overwritten, else a new file will be created.
  */
+@SuppressWarnings("DesignForExtension")
 public class FileBackedTaskManager extends DefaultTaskManager {
     private static final String FILENAME = "DefaultBackupFile.csv";
     private final Path backup;
@@ -38,14 +39,6 @@ public class FileBackedTaskManager extends DefaultTaskManager {
         backup = path;
         load();
         IdProvider.setStartId(maxId);
-    }
-
-    public int getMaxId() {
-        return maxId;
-    }
-
-    public void setMaxId(int maxId) {
-        this.maxId = maxId;
     }
 
     @Override

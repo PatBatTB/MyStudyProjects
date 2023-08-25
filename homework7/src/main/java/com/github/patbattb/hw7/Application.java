@@ -1,7 +1,7 @@
 package com.github.patbattb.hw7;
 
 import com.github.patbattb.hw7.httpserver.HttpTaskServer;
-import com.github.patbattb.hw7.taskmanager.HttpTaskManager;
+import com.github.patbattb.hw7.manager.taskmanager.HttpTaskManager;
 
 import java.io.IOException;
 
